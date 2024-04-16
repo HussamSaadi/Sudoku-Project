@@ -21,21 +21,21 @@ class Board:
 
         # Set the window dimensions
         WINDOW_SIZE = (500, 500)
-        screen = pygame.display.set_mode(WINDOW_SIZE)
+        self.screen = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption("Sudoku Grid")
         self.width, self.height = 9, 9
         CELL_SIZE = WINDOW_SIZE[0] // self.width
-        screen.fill(WHITE)
+        self.screen.fill(WHITE)
         # Draw grid lines
         for i in range(self.width + 1):
             line_width = 3 if i % 3 == 0 else 1
-            pygame.draw.line(screen, BLACK, (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE[1]), line_width)
-            pygame.draw.line(screen, BLACK, (0, i * CELL_SIZE), (WINDOW_SIZE[0], i * CELL_SIZE), line_width)
+            pygame.draw.line(self.screen, BLACK, (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE[1]), line_width)
+            pygame.draw.line(self.screen, BLACK, (0, i * CELL_SIZE), (WINDOW_SIZE[0], i * CELL_SIZE), line_width)
 
         # Bold lines for 3x3 boxes
         for i in range(0, WINDOW_SIZE[0], CELL_SIZE * 3):
-            pygame.draw.line(screen, BLACK, (i, 0), (i, WINDOW_SIZE[1]), 4)
-            pygame.draw.line(screen, BLACK, (0, i), (WINDOW_SIZE[0], i), 4)
+            pygame.draw.line(self.screen, BLACK, (i, 0), (i, WINDOW_SIZE[1]), 4)
+            pygame.draw.line(self.screen, BLACK, (0, i), (WINDOW_SIZE[0], i), 4)
 
 
     def select(self, row, col):
