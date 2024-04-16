@@ -1,5 +1,6 @@
 class SudokuGenerator:
     def __init__(self, row_length, removed_cells):
+
         pass
 
     def get_board(self):
