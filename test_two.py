@@ -1,30 +1,36 @@
 import pygame
-
-# Initialize pygame
 pygame.init()
+# Draws an outline of the Sudoku grid, with bold lines to delineate the 3x3 boxes.
+# Draws every cell on this board.
+pink = (255, 182, 193)
+white = (255, 255, 255)
 
-background_colour = (234, 212, 252)
+# Set the window dimensions
+WINDOW_SIZE = (500, 500)
+# display screen
 
-# Define the dimensions of
-# screen object(width,height)
-screen = pygame.display.set_mode((300, 300))
 
-# Set the caption of the screen
-pygame.display.set_caption('Geeksforgeeks')
+run = True
+while run:
+    screen = pygame.display.set_mode(WINDOW_SIZE)
+    pygame.display.set_caption("Sudoku Grid")
 
-# Fill the background colour to the screen
-screen.fill(background_colour)
+    width, height = 9, 9
+    CELL_SIZE = WINDOW_SIZE[0] // width
+    screen.fill(pink)
 
-# Update the display using flip
-pygame.display.flip()
+    for i in range(width + 1):
+        line_width = 3 if i % 3 == 0 else 1
+        pygame.draw.line(screen, white, (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE[1]), line_width)
+        pygame.draw.line(screen, white, (0, i * CELL_SIZE), (WINDOW_SIZE[0], i * CELL_SIZE), line_width)
 
-# Variable to keep our game loop running
-running = True
-# game loop
-while running:
-    # for loop through the event queue
+        # Bold lines for 3x3 boxes
+    for i in range(0, WINDOW_SIZE[0], CELL_SIZE * 3):
+        pygame.draw.line(screen, white, (i, 0), (i, WINDOW_SIZE[1]), 4)
+        pygame.draw.line(screen, white, (0, i), (WINDOW_SIZE[0], i), 4)
+
     for event in pygame.event.get():
-
-        # Check for QUIT event
         if event.type == pygame.QUIT:
-            running = False
+            run = False
+            pygame.quit()
+            exit(0)
