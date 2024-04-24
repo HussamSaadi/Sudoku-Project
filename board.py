@@ -57,13 +57,11 @@ class Board:
             # screen.fill(PINK)
 
             # calls draw grid function
-            self.draw()
+            Board.draw()
 
             # Update the display
             pygame.display.flip()
 
-    while 1:
-        game_loop()
 
     #
     # def draw(self):
