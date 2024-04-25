@@ -262,31 +262,33 @@ class SudokuGenerator:
                 count += 1
         pass
 
+    '''
+    DO NOT CHANGE
+    Provided for students
+    Given a number of rows and number of cells to remove, this function:
+    1. creates a SudokuGenerator
+    2. fills its values and saves this as the solved state
+    3. removes the appropriate number of cells
+    4. returns the representative 2D Python Lists of the board and solution
 
-'''
-DO NOT CHANGE
-Provided for students
-Given a number of rows and number of cells to remove, this function:
-1. creates a SudokuGenerator
-2. fills its values and saves this as the solved state
-3. removes the appropriate number of cells
-4. returns the representative 2D Python Lists of the board and solution
+    Parameters:
+    size is the number of rows/columns of the board (9 for this project)
+    removed is the number of cells to clear (set to 0)
 
-Parameters:
-size is the number of rows/columns of the board (9 for this project)
-removed is the number of cells to clear (set to 0)
+    Return: list[list] (a 2D Python list to represent the board)
+    '''
 
-Return: list[list] (a 2D Python list to represent the board)
-'''
+    def generate_sudoku( size, removed):
+        sudoku = SudokuGenerator(size, removed)
+        sudoku.fill_values()
+        board = sudoku.get_board()
+        sudoku.remove_cells()
+        board = sudoku.get_board()
+        return board
 
 
-def generate_sudoku(size, removed):
-    sudoku = SudokuGenerator(size, removed)
-    sudoku.fill_values()
-    board = sudoku.get_board()
-    sudoku.remove_cells()
-    board = sudoku.get_board()
-    return board
+
+
 
 
 

@@ -16,20 +16,19 @@ BLACK = (0, 0, 0)
 
 class Board:
     def __init__(self, width, height, screen, difficulty):
-    # Constructor for the Board class.
-    # screen is a window from PyGame.
-    # difficulty is a variable to indicate if the user chose easy, medium, or hard.
         self.width = width
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
+        self.selected_cell = None  # Initialize selected cell as None
 
     def draw(self):
         """
-               Draws the Sudoku grid on the screen.
-               """
+        Draws the Sudoku grid on the screen.
+        """
         PINK = (255, 182, 193)
         BLACK = (0, 0, 0)
+        WHITE = (255, 255, 255)
 
         self.screen.fill(PINK)
         pygame.draw.rect(self.screen, BLACK, pygame.Rect(15, 15, 720, 720), 10)
@@ -37,6 +36,15 @@ class Board:
             line_width = 5 if i % 3 != 0 else 10
             pygame.draw.line(self.screen, BLACK, ((i * 80) + 15, 15), ((i * 80) + 15, 735), line_width)
             pygame.draw.line(self.screen, BLACK, (15, (i * 80) + 15), (735, (i * 80) + 15), line_width)
+
+        # Fill selected cell with white color if it's selected
+        if self.selected_cell is not None:
+            row, col = self.selected_cell
+            cell_size = 720 // 9
+            offset_x = 15
+            offset_y = 15
+            pygame.draw.rect(self.screen, WHITE, ((col * cell_size) + offset_x, (row * cell_size) + offset_y, cell_size, cell_size))
+
 
     def game_loop(self):
         while True:
@@ -114,6 +122,18 @@ class Board:
     def click(self, x, y):
         #If a tuple of (x, y) coordinates is within the displayed board, this function returns a tuple of the (row, col)
         # of the cell which was clicked. Otherwise, this function returns None
+        cell_size = 720 // 9
+        offset_x = 15
+        offset_y = 15
+
+        # Check if click is within the board
+        if offset_x <= x <= offset_x + 720 and offset_y <= y <= offset_y + 720:
+            # Calculate row and column
+            row = (y - offset_y) // cell_size
+            col = (x - offset_x) // cell_size
+            return row, col
+        else:
+            return None
         pass
 
     def clear(self):
@@ -140,20 +160,21 @@ class Board:
             if self.is_editable_cell(row, col):
                 # Set the sketch for the selected cell
                 self.sketches[row][col] = value
+
     pass
 
     def place_number(self, value):
-        # Sets the value of the current selected cell equal to user entered value.
-        # Called when the user presses the Enter key.
-        # Sets the value of the current selected cell equal to user entered value.
-        # Called when the user presses the Enter key.
-        if self.selected_cell:
-            row, col = self.selected_cell
-            # Check if the cell is editable (not part of the original puzzle)
-            if self.is_editable_cell(row, col):
-                # Set the value for the selected cell
-                self.board[row][col] = value
-    pass
+        """
+        Places the value in the selected cell.
+        """
+        for row in range(9):
+            for col in range(9):
+                value = self.board[row][col]
+                if value != 0:
+                    text_surface = self.font.render(str(value), True, BLACK)
+                    cell_rect = pygame.Rect(col * 80 + 20, row * 80 + 20, 80, 80)
+                    text_rect = text_surface.get_rect(center=cell_rect.center)
+                    self.screen.blit(text_surface, text_rect)
 
     def reset_to_original(self):
         # Reset all cells in the board to their original values (0 if cleared, otherwise the corresponding digit)
@@ -213,18 +234,3 @@ class Board:
             seen.add(val)
         return True
 
-if __name__ == '__main__':
-    # Initialize Pygame
-    pygame.init()
-
-    # Set up the display
-    width = 750
-    height = 750
-    screen = pygame.display.set_mode((width, height))
-    pygame.display.set_caption("Sudoku Grid")
-
-    # Create an instance of the Board class
-    sudoku_board = Board(width, height, screen, difficulty="medium")
-
-    # Main game loop
-    sudoku_board.game_loop()
