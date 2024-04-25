@@ -59,9 +59,9 @@ class SudokuGenerator:
     '''
 
     def print_board(self):
-        reverse_board = board[::-1]
-        for row_list in reverse_board:
-            print(' '.join(row_list))
+        # reverse_board = board[::-1]
+        # for row_list in reverse_board:
+        #     print(' '.join(row_list))
         pass
 
     '''
@@ -76,7 +76,10 @@ class SudokuGenerator:
     '''
 
     def valid_in_row(self, row, num):
-        pass
+        for col in range(self.row_length):
+            if self.board[row][col] == num:
+                return False
+        return True
 
     '''
 	Determines if num is contained in the specified column (vertical) of the board
@@ -90,7 +93,10 @@ class SudokuGenerator:
     '''
 
     def valid_in_col(self, col, num):
-        pass
+        for row in range(self.row_length):
+            if self.board[row][col] == num:
+                return False
+        return True
 
     '''
 	Determines if num is contained in the 3x3 box specified on the board
@@ -106,11 +112,11 @@ class SudokuGenerator:
     '''
 
     def valid_in_box(self, row_start, col_start, num):
-        if i in 
-            return True
-
-
-        return False
+        for row in range(3):
+            for col in range(3):
+                if self.board[row_start + row][col_start + col] == num:
+                    return False
+        return True
 
 
     '''
@@ -246,3 +252,6 @@ def generate_sudoku(size, removed):
     sudoku.remove_cells()
     board = sudoku.get_board()
     return board
+
+
+
