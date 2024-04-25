@@ -21,6 +21,8 @@ class Board:
         self.screen = screen
         self.difficulty = difficulty
         self.selected_cell = None  # Initialize selected cell as None
+        self.board = [[0] * 9 for _ in range(9)]
+        self.font = pygame.font.Font(None, 65)
 
     def draw(self):
         """
@@ -44,7 +46,20 @@ class Board:
             offset_x = 15
             offset_y = 15
             pygame.draw.rect(self.screen, WHITE, ((col * cell_size) + offset_x, (row * cell_size) + offset_y, cell_size, cell_size))
+        self.draw_numbers()
 
+    def draw_numbers(self):
+        """
+        Draws the numbers in cells.
+        """
+        for row in range(9):
+            for col in range(9):
+                value = self.board[row][col]
+                if value != 0:
+                    text_surface = self.font.render(str(value), True, BLACK)
+                    cell_rect = pygame.Rect(col * 80 + 20, row * 80 + 20, 80, 80)
+                    text_rect = text_surface.get_rect(center=cell_rect.center)
+                    self.screen.blit(text_surface, text_rect)
 
     def game_loop(self):
         while True:
@@ -55,7 +70,7 @@ class Board:
 
             # Fill the screen with white color
             # screen.fill(PINK)
-
+            self.handle_events()
             # calls draw grid function
             self.draw()
 
@@ -167,14 +182,12 @@ class Board:
         """
         Places the value in the selected cell.
         """
-        for row in range(9):
-            for col in range(9):
-                value = self.board[row][col]
-                if value != 0:
-                    text_surface = self.font.render(str(value), True, BLACK)
-                    cell_rect = pygame.Rect(col * 80 + 20, row * 80 + 20, 80, 80)
-                    text_rect = text_surface.get_rect(center=cell_rect.center)
-                    self.screen.blit(text_surface, text_rect)
+
+        if self.selected_cell is not None:
+            row, col = self.selected_cell
+            # Check if the cell is empty
+            if self.board[row][col] == 0:
+                self.board[row][col] = value
 
     def reset_to_original(self):
         # Reset all cells in the board to their original values (0 if cleared, otherwise the corresponding digit)
@@ -187,6 +200,23 @@ class Board:
                 else:
                     # Clear the cell value
                     self.board[row][col] = 0
+
+    def handle_events(self):
+        """
+        Handles events such as mouse clicks and keyboard input.
+        """
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                row, col = self.click(x, y)
+                self.select_cell(row, col)
+            elif event.type == pygame.KEYDOWN:
+                if pygame.K_1 <= event.key <= pygame.K_9:
+                    value = event.key - pygame.K_0
+                    self.place_number(value)
 
     def is_full(self):
         # Returns a Boolean value indicating whether the board is full or not
