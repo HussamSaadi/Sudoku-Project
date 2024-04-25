@@ -25,6 +25,9 @@ class SudokuGenerator:
     '''
 
     def __init__(self, row_length, removed_cells):
+        self.row_length = row_length
+        self.removed_cells = removed_cells
+        self.col_length = row_length
         pass
 
     '''
@@ -35,6 +38,16 @@ class SudokuGenerator:
     '''
 
     def get_board(self):
+        value = '-'
+        col_list = []
+        row_list = []
+        for column in range(self.row_length - 1, -1, -1):
+            col_list.append(value)
+
+        for row in range(self.col_length):
+            row_list.append(list(col_list))
+
+        return row_list
         pass
 
     '''
@@ -46,6 +59,9 @@ class SudokuGenerator:
     '''
 
     def print_board(self):
+        reverse_board = board[::-1]
+        for row_list in reverse_board:
+            print(' '.join(row_list))
         pass
 
     '''
