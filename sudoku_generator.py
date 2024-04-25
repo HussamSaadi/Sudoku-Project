@@ -59,9 +59,9 @@ class SudokuGenerator:
     '''
 
     def print_board(self):
-        # reverse_board = board[::-1]
-        # for row_list in reverse_board:
-        #     print(' '.join(row_list))
+        reverse_board = self.board[::-1]
+        for row_list in reverse_board:
+            print(' '.join(row_list))
         pass
 
     '''
@@ -131,7 +131,13 @@ class SudokuGenerator:
     '''
 
     def is_valid(self, row, col, num):
-        pass
+        check_row = self.valid_in_row(row, num)
+        check_col = self.valid_in_col(col, num)
+        check_box = self.valid_in_box(row, col, num)
+        if check_row == False or check_col == False or check_box == False:
+            return False
+        else:
+            return True
 
     '''
     Fills the specified 3x3 box with values
@@ -145,7 +151,28 @@ class SudokuGenerator:
     '''
 
     def fill_box(self, row_start, col_start):
-        pass
+        box_num_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        random.shuffle(box_num_list)
+        for i in range(row_start, row_start + 3):
+            for j in range(col_start, col_start + 3):
+                if self.board[i][j] == '-':
+                    avail_num = list(self.unused_in_box[(row_start, col_start)])
+                    random.shuffle(avail_num)
+                    for x_num in avail_num:
+                        if x_num in box_num_list:
+                            self.board[i][j] = x_num
+                            box_num_list.remove(x_num)
+                            break
+
+    def test_unused_in_box(self):
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+                for row in range(i, i + 3):
+                    for col in range(j, j + 3):
+                        if self.board[row][col] != '-':
+                            box_num.remove(self.board[row][col])
+                self.unused_in_box[(i, j)] = box_num
 
     '''
     Fills the three boxes along the main diagonal of the board
