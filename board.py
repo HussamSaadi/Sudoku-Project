@@ -25,26 +25,18 @@ class Board:
         self.difficulty = difficulty
 
     def draw(self):
-        # gives us a pink background
-        screen.fill(PINK)
-        # draws outside rectangle
-        pygame.draw.rect(screen, BLACK, pygame.Rect(15, 15, 720, 720), 10)
-        i = 1
-        while (i * 80) < 720:
-            if i % 3 != 0:
-                line_width = 5
-            else:
-                line_width = 10
+        """
+               Draws the Sudoku grid on the screen.
+               """
+        PINK = (255, 182, 193)
+        BLACK = (0, 0, 0)
 
-            # draws vertical lines
-            pygame.draw.line(screen, BLACK, pygame.Vector2(((i * 80) + 15), 15), pygame.Vector2(((i * 80) + 15), 735),
-                             line_width)
-            # draws horizontal lines
-            pygame.draw.line(screen, BLACK, pygame.Vector2(15, ((i * 80) + 15)), pygame.Vector2(735, ((i * 80) + 15)),
-                             line_width)
-            i += 1
-            pass
-
+        self.screen.fill(PINK)
+        pygame.draw.rect(self.screen, BLACK, pygame.Rect(15, 15, 720, 720), 10)
+        for i in range(1, 10):
+            line_width = 5 if i % 3 != 0 else 10
+            pygame.draw.line(self.screen, BLACK, ((i * 80) + 15, 15), ((i * 80) + 15, 735), line_width)
+            pygame.draw.line(self.screen, BLACK, (15, (i * 80) + 15), (735, (i * 80) + 15), line_width)
 
     def game_loop(self):
         while True:
@@ -233,6 +225,6 @@ if __name__ == '__main__':
 
     # Create an instance of the Board class
     sudoku_board = Board(width, height, screen, difficulty="medium")
-    sudoku_board.draw()
+
     # Main game loop
     sudoku_board.game_loop()
