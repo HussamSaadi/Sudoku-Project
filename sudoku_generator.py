@@ -106,7 +106,12 @@ class SudokuGenerator:
     '''
 
     def valid_in_box(self, row_start, col_start, num):
-        pass
+        if i in 
+            return True
+
+
+        return False
+
 
     '''
     Determines if it is valid to enter num at (row, col) in the board
