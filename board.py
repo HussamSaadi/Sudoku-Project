@@ -57,7 +57,7 @@ class Board:
             # screen.fill(PINK)
 
             # calls draw grid function
-            Board.draw()
+            self.draw()
 
             # Update the display
             pygame.display.flip()
@@ -116,6 +116,7 @@ class Board:
     def select(self, row, col):
         # Marks the cell at (row, col) in the board as the current selected cell.
         # Once a cell has been selected, the user can edit its value or sketched value.
+        self.selected_cell = (row, col)
         pass
 
     def click(self, x, y):
@@ -126,37 +127,112 @@ class Board:
     def clear(self):
         # Clears the value cell. Note that the user can only remove the cell values and sketched value that are
         # filled by themselves.
-        pass
+        if self.selected_cell:
+            row, col = self.selected_cell
+            # Check if the cell has a value filled by the user (not part of the original puzzle)
+            if self.is_editable_cell(row, col):
+                # Clear the value and sketch from the selected cell
+                self.board[row][col] = 0  # Clear the value
+                self.sketches[row][col] = None  # Clear the sketch
+
+    def is_editable_cell(self, row, col):
+        # Helper method to check if a cell is editable by the user
+        return self.original_board[row][col] == 0
 
     def sketch(self, value):
         # Sets the sketched value of the current selected cell equal to user entered value.
         # It will be displayed at the top left corner of the cell using the draw() function.
-        pass
+        if self.selected_cell:
+            row, col = self.selected_cell
+            # Check if the cell is editable (not part of the original puzzle)
+            if self.is_editable_cell(row, col):
+                # Set the sketch for the selected cell
+                self.sketches[row][col] = value
+    pass
 
     def place_number(self, value):
         # Sets the value of the current selected cell equal to user entered value.
         # Called when the user presses the Enter key.
-        pass
+        # Sets the value of the current selected cell equal to user entered value.
+        # Called when the user presses the Enter key.
+        if self.selected_cell:
+            row, col = self.selected_cell
+            # Check if the cell is editable (not part of the original puzzle)
+            if self.is_editable_cell(row, col):
+                # Set the value for the selected cell
+                self.board[row][col] = value
+    pass
 
     def reset_to_original(self):
         # Reset all cells in the board to their original values (0 if cleared, otherwise the corresponding digit)
-        pass
+        for row in range(9):
+            for col in range(9):
+                # Check if the cell is editable (not part of the original puzzle)
+                if self.is_editable_cell(row, col):
+                    # Reset the cell value to its original value
+                    self.board[row][col] = self.original_board[row][col]
+                else:
+                    # Clear the cell value
+                    self.board[row][col] = 0
 
     def is_full(self):
         # Returns a Boolean value indicating whether the board is full or not
-        pass
+        for row in range(9):
+            for col in range(9):
+                # If any cell is empty, return False
+                if self.board[row][col] == 0:
+                    return False
+        # If no empty cells are found, return True
+        return True
 
     def update_board(self):
         # Updates the underlying 2D board with the values in all cells.
-        pass
+        for row in range(9):
+            for col in range(9):
+                self.board[row][col] = self.cells[row][col].value
 
     def find_empty(self):
-        # Finds an empty cell and returns its row and col as a tuple (x, y).
-        pass
+        # Finds an empty cell and returns its row and col as a tuple (row, col).
+        for row in range(9):
+            for col in range(9):
+                if self.board[row][col] == 0:
+                    return row, col
+        return None  # Return None if no empty cell is found
 
     def check_board(self):
         # Check whether the Sudoku board is solved correctly.
-        pass
+        # Check rows, columns, and 3x3 grids for duplicate values
+        for i in range(9):
+            if not self.is_valid_group([self.board[i][j] for j in range(9)]) or \
+                    not self.is_valid_group([self.board[j][i] for j in range(9)]):
+                return False
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                if not self.is_valid_group([self.board[i + m][j + n] for n in range(3) for m in range(3)]):
+                    return False
+        return True
 
+    def is_valid_group(self, group):
+        # Helper function to check if a group (row, column, or 3x3 grid) contains only unique values
+        seen = set()
+        for val in group:
+            if val != 0 and val in seen:
+                return False
+            seen.add(val)
+        return True
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
+    # Initialize Pygame
+    pygame.init()
+
+    # Set up the display
+    width = 750
+    height = 750
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.set_caption("Sudoku Grid")
+
+    # Create an instance of the Board class
+    sudoku_board = Board(width, height, screen, difficulty="medium")
+    sudoku_board.draw()
+    # Main game loop
+    sudoku_board.game_loop()
