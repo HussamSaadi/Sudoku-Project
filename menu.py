@@ -1,5 +1,6 @@
 import pygame
 import sys
+from sudoku import main
 
 from pygame.locals import *
 
@@ -21,7 +22,7 @@ screen.fill(WHITE)
 font = pygame.font.SysFont("arialblack", 40)
 
 # game variables
-
+menu_state = "main"
 
 # create surface object, image is drawn on it
 img = pygame.image.load('buttonIcons/main.png')
@@ -65,6 +66,7 @@ class Button:
 
         return action
 
+
 # create button instances
 easy_button = Button(130, 610, easy_img, 0.7)
 med_button = Button(300, 610, med_img, 0.7)
@@ -80,13 +82,17 @@ def draw_text(text, font, text_col, x, y):
 # game loop
 run = True
 while run:
-
+    # check menu state
+    # if menu_state == "main":
     if easy_button.draw():
         print("Easy")
+        main()
+            # menu_state = "new screen"
     if med_button.draw():
         print("Medium")
     if hard_button.draw():
         print("Hard")
+    # menu_state = "main"
 
     draw_text("Welcome to Sudoku", font, BLACK, 160, 50)
     draw_text("Select Game Mode:", font, BLACK, 160, 545)
