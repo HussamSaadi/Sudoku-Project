@@ -20,6 +20,8 @@ def main():
     running = True
     while running:
         sudoku_board.handle_events()
+        sudoku_board.draw()
+        pygame.display.flip()
         # for event in pygame.event.get():
         #     if event.type == pygame.QUIT:
         #         pygame.quit()
