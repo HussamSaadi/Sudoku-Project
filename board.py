@@ -62,22 +62,22 @@ class Board:
                     text_rect = text_surface.get_rect(center=cell_rect.center)
                     self.screen.blit(text_surface, text_rect)
 
-    def game_loop(self):
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-            self.handle_events()
-
-            # Fill the screen with white color
-            # screen.fill(PINK)
-
-            # calls draw grid function
-            self.draw()
-
-            # Update the display
-            pygame.display.flip()
+    # def game_loop(self):
+    #     while True:
+    #         for event in pygame.event.get():
+    #             if event.type == pygame.QUIT:
+    #                 pygame.quit()
+    #                 sys.exit()
+    #         self.handle_events()
+    #
+    #         # Fill the screen with white color
+    #         # screen.fill(PINK)
+    #
+    #         # calls draw grid function
+    #         self.draw()
+    #
+    #         # Update the display
+    #         pygame.display.flip()
 
     def select(self, row, col):
         # Marks the cell at (row, col) in the board as the current selected cell.
@@ -172,6 +172,8 @@ class Board:
                 elif event.key == pygame.K_DELETE:
                     print("Delete key pressed")
                     self.clear()
+        self.draw()
+        pygame.display.flip()
 
 
     def is_full(self):
