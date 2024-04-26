@@ -19,7 +19,7 @@ def main():
     sudoku_board = Board(width, height, screen, difficulty="medium")
 
     # Generate initial board
-    generated_board = generate_sudoku(9, 45)
+    generated_board = generate_sudoku(9, 1)
 
     for row in range(9):
         for col in range(9):
