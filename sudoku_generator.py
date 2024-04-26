@@ -27,8 +27,13 @@ class SudokuGenerator:
     def __init__(self, row_length, removed_cells):
         self.row_length = row_length
         self.removed_cells = removed_cells
-        self.col_length = row_length
-        pass
+        # self.col_length = row_length
+
+        self.board = [[0 for _ in range(row_length)] for _ in range(row_length)]  # Initialize board
+        self.box_length = int(math.sqrt(row_length))
+        self.unused_in_box = {}
+
+
 
     '''
 	Returns a 2D python list of numbers which represents the board
@@ -38,18 +43,21 @@ class SudokuGenerator:
     '''
 
     def get_board(self):
-        value = '-'
-        col_list = []
-        row_list = []
-        for column in range(self.row_length - 1, -1, -1):
-            col_list.append(value)
+        # If we are creating the board at the init method,
+        # then all this should do is return the board. Hopefully :)
+        # board = [['-' for _ in range(self.row_length)] for _ in range(self.row_length)]
+        return self.board
 
-        for row in range(self.col_length):
-            row_list.append(list(col_list))
-
-        return row_list
-        pass
-
+    # value = '-'
+    # col_list = []
+    # row_list = []
+    # for column in range(self.row_length - 1, -1, -1):
+    #     col_list.append(value)
+    #
+    # for row in range(self.col_length):
+    #     row_list.append(list(col_list))
+    #
+    # return row_list
     '''
 	Displays the board to the console
     This is not strictly required, but it may be useful for debugging purposes
@@ -59,10 +67,13 @@ class SudokuGenerator:
     '''
 
     def print_board(self):
-        reverse_board = self.board[::-1]
-        for row_list in reverse_board:
-            print(' '.join(row_list))
-        pass
+        reversed_rows = str(self.board[::-1])
+        for row_list in reversed_rows:
+            new_row_list = ' '.join(row_list)
+            print(int(new_row_list))
+
+
+
 
     '''
 	Determines if num is contained in the specified row (horizontal) of the board
@@ -114,9 +125,19 @@ class SudokuGenerator:
     def valid_in_box(self, row_start, col_start, num):
         for row in range(3):
             for col in range(3):
+                # Check if indices are within the bounds of the board
+                if (row_start + row) >= self.row_length or (col_start + col) >= self.row_length:
+                    return False
                 if self.board[row_start + row][col_start + col] == num:
                     return False
         return True
+
+    # def valid_in_box(self, row_start, col_start, num):
+    #     for row in range(3):
+    #         for col in range(3):
+    #             if self.board[row_start + row][col_start + col] == num:
+    #                 return False
+    #     return True
 
 
     '''
@@ -150,12 +171,23 @@ class SudokuGenerator:
 	Return: None
     '''
 
+    def test_unused_in_box(self):
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+                for row in range(i, i + 3):
+                    for col in range(j, j + 3):
+                        if self.board[row][col] != 0:
+                            box_num.remove(self.board[row][col])
+                self.unused_in_box[(i, j)] = box_num
+
+
     def fill_box(self, row_start, col_start):
         box_num_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         random.shuffle(box_num_list)
         for i in range(row_start, row_start + 3):
             for j in range(col_start, col_start + 3):
-                if self.board[i][j] == '-':
+                if self.board[i][j] == 0:
                     avail_num = list(self.unused_in_box[(row_start, col_start)])
                     random.shuffle(avail_num)
                     for x_num in avail_num:
@@ -164,15 +196,6 @@ class SudokuGenerator:
                             box_num_list.remove(x_num)
                             break
 
-    def test_unused_in_box(self):
-        for i in range(0, 9, 3):
-            for j in range(0, 9, 3):
-                box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-                for row in range(i, i + 3):
-                    for col in range(j, j + 3):
-                        if self.board[row][col] != '-':
-                            box_num.remove(self.board[row][col])
-                self.unused_in_box[(i, j)] = box_num
 
     '''
     Fills the three boxes along the main diagonal of the board
@@ -183,6 +206,7 @@ class SudokuGenerator:
     '''
 
     def fill_diagonal(self):
+        self.test_unused_in_box()
         for box in range(0, 9, 3):
             self.fill_box(box, box)
 
@@ -260,7 +284,7 @@ class SudokuGenerator:
             if self.board[row][column] != 0:
                 self.board[row][column] = 0
                 count += 1
-        pass
+
 
     '''
     DO NOT CHANGE
@@ -278,17 +302,53 @@ class SudokuGenerator:
     Return: list[list] (a 2D Python list to represent the board)
     '''
 
-    def generate_sudoku( size, removed):
-        sudoku = SudokuGenerator(size, removed)
-        sudoku.fill_values()
-        board = sudoku.get_board()
-        sudoku.remove_cells()
-        board = sudoku.get_board()
-        return board
+def generate_sudoku(size, removed):
+    sudoku = SudokuGenerator(size, removed)
+    sudoku.fill_values()
+    board = sudoku.get_board()
+    sudoku.remove_cells()
+    board = sudoku.get_board()
+    return board
 
 
 
 
+# Testing:
+
+def test_methods():
+    # Initialize SudokuGenerator
+    sudoku = SudokuGenerator(9, 0)
+    sudoku.board = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ]
+
+    # Test valid_in_row
+    assert sudoku.valid_in_row(0, 5) == False
+    assert sudoku.valid_in_row(0, 6) == True
+
+    # Test valid_in_col
+    assert sudoku.valid_in_col(0, 5) == False
+    assert sudoku.valid_in_col(0, 2) == True
+
+    # Test valid_in_box
+    assert sudoku.valid_in_box(0, 0, 5) == False
+    assert sudoku.valid_in_box(0, 0, 2) == True
+
+    # Test is_valid
+    assert sudoku.is_valid(0, 0, 5) == False
+    assert sudoku.is_valid(0, 0, 2) == True
+
+    print("All tests passed!")
+
+test_methods()
 
 
 

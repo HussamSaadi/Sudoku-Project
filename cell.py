@@ -1,85 +1,42 @@
 import pygame
 import sys
 
-pygame.init()
-# Set the width and height of the window
-width, height = 750, 750
-window_size = (width, height)
-
-# Create a window
-window = pygame.display.set_mode(window_size)
-# pygame.display.set_caption("Individual Squares")
-
-# Set the color of the square
-PINK = (255, 182, 193)
+# Define colors
 BLACK = (0, 0, 0)
-square_color = BLACK
+WHITE = (255, 255, 255)
+PINK = (255, 174, 201, 255)
+BLUE = (0, 162, 232, 255)
+
 
 class Cell:
-    def __init__(self, value, row, col , screen):
+    def __init__(self, value, row, col, screen):
         self.value = value
         self.row = row
         self.col = col
         self.screen = screen
-        pass
+        self.font = pygame.font.Font(None, 65)
+        self.selected = False
 
     def set_cell_value(self, value):
         self.value = value
-        pass
+        print(value)
+
     def set_sketched_value(self, value):
-        self.skectech_value = value
-        pass
+        self.sketched_value = value
+        print(value)
+
     def draw(self):
-        # Set the size and position of the square
-        square_size = 80
-        square_position = (15, 15)  # Top left corner
-        line_width = 5
-
-        # Main loop
-        while True:
-            # Handle events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-            # Fill the window with white color
-            window.fill(PINK)
-
-            # Draw the square
-            pygame.draw.rect(window, square_color, (square_position, (square_size, square_size)), line_width)
-
-            # Update the display
-            pygame.display.flip()
-
-    # while (i * 80) < 720:
-    # pygame.draw.line(screen, BLACK, pygame.Vector2(((i * 80) + 15), 15), pygame.Vector2(((i * 80) + 15), 15), 5)
-    #Draws this cell, along with the value inside it.
-    # If this cell has a nonzero value, that value is displayed.
-    #     if 0 <= self.value <= 9:
-    #         size = [self.row, self.col]
-    #         white = (255, 255, 255)
-    #         screen_display = pygame.display
-    #         surface = screen_display.set_mode(size)
-    #         pygame.draw.rect(surface, white, pygame.Rect(30, 30, 60, ))
-
-            # text_font = pygame.font.SysFont(text_type, size)
-            # text_render = text_font.render(text, True, color)
-            # rect_dims = list(pygame.Surface.get_rect(text_render))
-
-            # pygame.Surface.blit()
-            # cell = pygame.Surface.get_rect()
-            # draw = pygame.draw.rect(cell)
-    # Otherwise, no value is displayed in the cell.
-
-
-        # get_rect()
-        # get rect size, then render
-        # to center, divide size by 2
-        # multiply the square size by the number of the column/row to move it there
-        # each square will have a size of one
-        # text_surface = my_font.render('Some Text', False, (0, 0, 0))
-        # prev. line (change 0's to black)
-        # get dim, center with get_rect(), then blit
-
-
+        cell_size = 720 // 9
+        offset_x = 15
+        offset_y = 15
+        cell_rect = pygame.Rect(self.col * cell_size + offset_x, self.row * cell_size + offset_y, cell_size, cell_size)
+        pygame.draw.rect(self.screen, WHITE, cell_rect)
+        pygame.draw.rect(self.screen, BLUE, cell_rect, 1)
+        # Add red boundary if the cell is selected
+        if self.selected:
+            pygame.draw.rect(self.screen, PINK, (
+            (self.col * cell_size) + offset_x, (self.row * cell_size) + offset_y, cell_size, cell_size))
+        if self.value != 0:
+            text_surface = self.font.render(str(self.value), True, BLACK)
+            text_rect = text_surface.get_rect(center=cell_rect.center)
+            self.screen.blit(text_surface, text_rect)
