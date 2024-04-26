@@ -27,16 +27,22 @@ class Cell:
 
     def draw(self):
         cell_size = 720 // 9
-        offset_x = 15
-        offset_y = 15
+        offset_x = (800 - 720) // 2
+        offset_y = (800 - 720 - 80) // 2
+
+        # calculate cell position based on row and colum
         cell_rect = pygame.Rect(self.col * cell_size + offset_x, self.row * cell_size + offset_y, cell_size, cell_size)
+
+        # draw the cell
         pygame.draw.rect(self.screen, WHITE, cell_rect)
         pygame.draw.rect(self.screen, BLUE, cell_rect, 1)
+
         # Add red boundary if the cell is selected
         if self.selected:
-            pygame.draw.rect(self.screen, PINK, (
-            (self.col * cell_size) + offset_x, (self.row * cell_size) + offset_y, cell_size, cell_size))
+            pygame.draw.rect(self.screen, PINK, cell_rect)
+            # (self.col * cell_size) + offset_x, (self.row * cell_size) + offset_y, cell_size, cell_size))
         if self.value != 0:
-            text_surface = self.font.render(str(self.value), True, BLACK)
+            font = pygame.font.Font(None, 36)
+            text_surface = font.render(str(self.value), True, BLACK)
             text_rect = text_surface.get_rect(center=cell_rect.center)
             self.screen.blit(text_surface, text_rect)

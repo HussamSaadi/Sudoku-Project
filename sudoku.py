@@ -40,7 +40,8 @@ def main():
     running = True
     while running:
         sudoku_board.draw()
-        sudoku_board.handle_events()
+        # sudoku_board.handle_events()
+
         pygame.display.flip()
         if sudoku_board.is_full():
             print("Congratulations! You have solved the Sudoku!")
