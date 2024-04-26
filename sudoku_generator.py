@@ -125,9 +125,19 @@ class SudokuGenerator:
     def valid_in_box(self, row_start, col_start, num):
         for row in range(3):
             for col in range(3):
+                # Check if indices are within the bounds of the board
+                if (row_start + row) >= self.row_length or (col_start + col) >= self.row_length:
+                    return False
                 if self.board[row_start + row][col_start + col] == num:
                     return False
         return True
+
+    # def valid_in_box(self, row_start, col_start, num):
+    #     for row in range(3):
+    #         for col in range(3):
+    #             if self.board[row_start + row][col_start + col] == num:
+    #                 return False
+    #     return True
 
 
     '''
@@ -303,6 +313,42 @@ def generate_sudoku(size, removed):
 
 
 
+# Testing:
+
+def test_methods():
+    # Initialize SudokuGenerator
+    sudoku = SudokuGenerator(9, 0)
+    sudoku.board = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ]
+
+    # Test valid_in_row
+    assert sudoku.valid_in_row(0, 5) == False
+    assert sudoku.valid_in_row(0, 6) == True
+
+    # Test valid_in_col
+    assert sudoku.valid_in_col(0, 5) == False
+    assert sudoku.valid_in_col(0, 2) == True
+
+    # Test valid_in_box
+    assert sudoku.valid_in_box(0, 0, 5) == False
+    assert sudoku.valid_in_box(0, 0, 2) == True
+
+    # Test is_valid
+    assert sudoku.is_valid(0, 0, 5) == False
+    assert sudoku.is_valid(0, 0, 2) == True
+
+    print("All tests passed!")
+
+test_methods()
 
 
 
