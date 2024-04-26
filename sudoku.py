@@ -2,7 +2,7 @@ import pygame
 import sys
 from board import *
 from cell import *
-from sudoku_generator import *
+from new_example_file import *
 
 # Initialize Pygame
 pygame.init()
@@ -17,12 +17,13 @@ pygame.display.set_caption("SUDOKU")
 
 def main():
     sudoku_board = Board(width, height, screen, difficulty="medium")
-    # sudoku_board = generate_sudoku(9, 45)  # Change the parameters as needed
-    # for row in range(9):
-    #     for col in range(9):
-    #         value = sudoku_board[row][col]
-    #         if value != 0:
-    #             board.cells[row][col].set_sketched_value(value)
+    generated_board = generate_sudoku(9, 45)  # Change the parameters as needed
+    for row in range(9):
+        for col in range(9):
+            value = generated_board[row][col]
+            if value != 0:
+                sudoku_board.cells[row][col].set_sketched_value(value)
+
 
     # Main game loop
     running = True
