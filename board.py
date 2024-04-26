@@ -21,22 +21,57 @@ class Board:
         self.original_board = [[cell.value for cell in row] for row in self.cells]
         self.board = [[0 for _ in range(width)] for _ in range(height)]
 
+        # Define button dimensions and colors
+        self.button_width = 50
+        self.button_height = 50
+        self.button_color = PINK
+        self.button_font = pygame.font.Font(None, 30)
+        self.text_color = BLACK
+        self.grid_width = 600  # Adjust as needed
+        self.button_width, button_height = 200, 40  # Adjust button dimensions if needed
+        self.horizontal_center = (width - self.grid_width) // 2
+        self.reset_button_rect = pygame.Rect(self.horizontal_center-10, height - 60, self.button_width,
+                                             self.button_height)
+        self.restart_button_rect = pygame.Rect(self.horizontal_center+200, height - 60, self.button_width,
+                                               self.button_height)
+        self.exit_button_rect = pygame.Rect(self.horizontal_center + 410, height - 60, self.button_width,
+                                            self.button_height)
+
     def draw(self):
         self.screen.fill(LIGHT_BLUE)
         for row in range(9):
             for col in range(9):
                 self.cells[row][col].draw()
+        pygame.draw.rect(self.screen, self.button_color, self.reset_button_rect)
+        pygame.draw.rect(self.screen, self.button_color, self.restart_button_rect)
+        pygame.draw.rect(self.screen, self.button_color, self.exit_button_rect)
 
+        # Draw buttons
+        pygame.draw.rect(self.screen, self.button_color, self.reset_button_rect)
+        pygame.draw.rect(self.screen, self.button_color, self.restart_button_rect)
+        pygame.draw.rect(self.screen, self.button_color, self.exit_button_rect)
+
+        # Add text to buttons
+        self.draw_text("Reset", self.reset_button_rect.center, self.button_font)
+        self.draw_text("Restart", self.restart_button_rect.center, self.button_font)
+        self.draw_text("Exit", self.exit_button_rect.center, self.button_font)
+
+        # Draw grid lines
         pygame.draw.rect(self.screen, BLACK, pygame.Rect(15, 15, 720, 720), 10)
         for i in range(1, 10):
-
             if i == 3 or i == 6:
                 line_width = 10
             else:
                 line_width = 5
             pygame.draw.line(self.screen, BLACK, ((i * 80) + 15, 15), ((i * 80) + 15, 735), line_width)
             pygame.draw.line(self.screen, BLACK, (15, (i * 80) + 15), (735, (i * 80) + 15), line_width)
+
         pygame.display.flip()
+
+    def draw_text(self, text, pos, font):
+        text_surface = font.render(text, True, self.text_color)
+        text_rect = text_surface.get_rect(center=pos)
+        self.screen.blit(text_surface, text_rect)
 
     def click(self, x, y):
         cell_size = 720 // 9
@@ -66,21 +101,6 @@ class Board:
                 self.cells[r][c].selected = False  # Deselect all cells
         self.cells[row][col].selected = True
 
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                row, col = self.click(x, y)
-                self.select(row, col)
-            if event.type == pygame.KEYDOWN:
-                if pygame.K_1 <= event.key <= pygame.K_9:
-                    value = event.key - pygame.K_0
-                    self.place_number(value)
-                elif event.key == pygame.K_BACKSPACE:
-                    self.clear()
 
     def place_number(self, value):
         if self.selected_cell is not None:
@@ -129,17 +149,16 @@ class Board:
                     print("Delete key pressed")
                     self.clear()
 
-
-
-    def is_full(self):
-        # Returns a Boolean value indicating whether the board is full or not
-        for row in range(9):
-            for col in range(9):
-                # If any cell is empty, return False
-                if self.board[row][col] == 0:
-                    return False
-        # If no empty cells are found, return True
-        return True
+            # Check for button clicks
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left mouse button
+                    mouse_pos = pygame.mouse.get_pos()
+                    if self.reset_button_rect.collidepoint(mouse_pos):
+                        self.reset_to_original()
+                    # elif self.restart_button_rect.collidepoint(mouse_pos):
+                    #     self.restart_game()
+                    elif self.exit_button_rect.collidepoint(mouse_pos):
+                        sys.exit()
 
     def update_board(self):
         # Updates the underlying 2D board with the values in all cells.
