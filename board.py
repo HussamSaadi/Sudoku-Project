@@ -23,6 +23,7 @@ class Board:
         self.selected_cell = None  # Initialize selected cell as None
         self.board = [[0] * 9 for _ in range(9)]
         self.font = pygame.font.Font(None, 65)
+        self.original_board = [[cell for cell in row] for row in self.board]
 
     def draw(self):
         """
@@ -103,19 +104,16 @@ class Board:
         pass
 
     def clear(self):
-        # Clears the value cell. Note that the user can only remove the cell values and sketched value that are
-        # filled by themselves.
         if self.selected_cell is not None:
             row, col = self.selected_cell
             # Check if the cell has a value filled by the user (not part of the original puzzle)
             if self.is_editable_cell(row, col):
                 # Clear the value and sketch from the selected cell
                 self.board[row][col] = 0 # Clear the value
-                # self.sketches[row][col] = None  # Clear the sketch
+
 
     def is_editable_cell(self, row, col):
-        # Helper method to check if a cell is editable by the user
-        return self.board[row][col] == 0
+        return self.original_board[row][col] == 0
 
     def sketch(self, value):
         # Sets the sketched value of the current selected cell equal to user entered value.
@@ -169,11 +167,11 @@ class Board:
                     print("Number key pressed")
                     value = event.key - pygame.K_0
                     self.place_number(value)
-                elif event.key == pygame.K_DELETE:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
                     print("Delete key pressed")
                     self.clear()
-        self.draw()
-        pygame.display.flip()
+
 
 
     def is_full(self):
