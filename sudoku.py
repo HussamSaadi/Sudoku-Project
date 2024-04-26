@@ -8,10 +8,10 @@ pygame.init()
 # Set up the display
 width, height = 750, 750
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Sudoku Grid")
+pygame.display.set_caption("SUDOKU")
 
 # Define colors
-PINK = (255, 182, 193)
+
 
 def main():
     sudoku_board = Board(width, height, screen, difficulty="medium")

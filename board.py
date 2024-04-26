@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Sudoku Grid")
 
 # Define colors
-PINK = (255, 182, 193)
+
 BLACK = (0, 0, 0)
 
 class Board:
@@ -28,11 +28,12 @@ class Board:
         """
         Draws the Sudoku grid on the screen.
         """
-        PINK = (255, 182, 193)
+
         BLACK = (0, 0, 0)
         WHITE = (255, 255, 255)
 
-        self.screen.fill(WHITE)
+        BEIGE = (245, 245, 220)
+        self.screen.fill(BEIGE)
         pygame.draw.rect(self.screen, BLACK, pygame.Rect(15, 15, 720, 720), 10)
         for i in range(1, 10):
             line_width = 5 if i % 3 != 0 else 10
