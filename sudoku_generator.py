@@ -29,7 +29,8 @@ class SudokuGenerator:
         self.removed_cells = removed_cells
         # self.col_length = row_length
 
-        self.board = [[0 for _ in range(row_length)] for _ in range(row_length)]  # Initialize board
+        # self.board = [[0 for _ in range(row_length)] for _ in range(row_length)]  #initializes the board
+        self.board = [[0 for _ in range(row_length)] for _ in range(row_length)]
         self.box_length = int(math.sqrt(row_length))
         # self.unused_in_box = {}
 
@@ -287,14 +288,24 @@ class SudokuGenerator:
 	Return: None
     '''
 
+
     def remove_cells(self):
         count = 0
         while count != (self.removed_cells + 1):
             row = random.randint(0, 8)
             column = random.randint(0, 8)
             if self.board[row][column] != 0:
+                print(f"Removing cell at row {row}, column {column}")
                 self.board[row][column] = 0
-                count += 1
+            count += 1
+    # def remove_cells(self):
+    #     count = 0
+    #     while count != (self.removed_cells + 1):
+    #         row = random.randint(0, 8)
+    #         column = random.randint(0, 8)
+    #         if self.board[row][column] != 0:
+    #             self.board[row][column] = 0
+    #             count += 1
 
 
     '''
