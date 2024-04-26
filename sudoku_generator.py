@@ -196,6 +196,7 @@ class SudokuGenerator:
     '''
 
     def fill_diagonal(self):
+        self.test_unused_in_box()
         for box in range(0, 9, 3):
             self.fill_box(box, box)
 
@@ -273,7 +274,7 @@ class SudokuGenerator:
             if self.board[row][column] != 0:
                 self.board[row][column] = 0
                 count += 1
-        pass
+
 
     '''
     DO NOT CHANGE
