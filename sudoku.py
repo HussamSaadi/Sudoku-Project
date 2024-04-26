@@ -17,24 +17,25 @@ pygame.display.set_caption("SUDOKU")
 
 def main():
     sudoku_board = Board(width, height, screen, difficulty="medium")
-    generated_board = generate_sudoku(9, 45)  # Change the parameters as needed
+
+    sudoku_generator = SudokuGenerator(9, 45)
+    sudoku_generator.fill_values()
+    sudoku_generator.remove_cells()
+
+    generated_board = sudoku_generator.get_board()
     for row in range(9):
         for col in range(9):
             value = generated_board[row][col]
             if value != 0:
                 sudoku_board.cells[row][col].set_sketched_value(value)
 
-
-    # Main game loop
     running = True
     while running:
-
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         running = False
-        sudoku_board.handle_events()
         sudoku_board.draw()
-        pygame.display.flip()
+        sudoku_board.handle_events()
+        if sudoku_board.is_full():
+            print("Congratulations! You have solved the Sudoku!")
+            running = False
 
 if __name__ == "__main__":
     main()

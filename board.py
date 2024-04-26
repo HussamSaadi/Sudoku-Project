@@ -19,6 +19,7 @@ class Board:
         self.cells = [[Cell(0, row, col, screen) for col in range(9)] for row in range(9)]
         self.font = pygame.font.Font(None, 65)
         self.original_board = [[cell.value for cell in row] for row in self.cells]
+        self.board = [[0 for _ in range(width)] for _ in range(height)]
 
     def draw(self):
         self.screen.fill(LIGHT_BLUE)
