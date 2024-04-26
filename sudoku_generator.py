@@ -172,27 +172,54 @@ class SudokuGenerator:
 	Return: None
     '''
 
-    # def test_unused_in_box(self):
-    #     for i in range(0, 9, 3):
-    #         for j in range(0, 9, 3):
-    #             box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-    #             for row in range(i, i + 3):
-    #                 for col in range(j, j + 3):
-    #                     if self.board[row][col] != 0:
-    #                         box_num.remove(self.board[row][col])
-    #             self.unused_in_box[(i, j)] = box_num
+    # Update the fill_box method in SudokuGenerator class
 
     def fill_box(self, row_start, col_start):
+        box_numbers = list(range(1, self.row_length + 1))  # List of numbers 1 to 9
+        random.shuffle(box_numbers)
         for i in range(row_start, row_start + 3):
             for j in range(col_start, col_start + 3):
                 if self.board[i][j] == 0:
                     # Create a list of available numbers for the current cell
-                    available_numbers = [num for num in range(1, self.row_length + 1)
-                                         if self.is_valid(i, j, num)]
+                    available_numbers = [num for num in box_numbers if self.is_valid(i, j, num)]
+                    # If no available numbers, reset box_numbers and shuffle again
+                    if not available_numbers:
+                        box_numbers = list(range(1, self.row_length + 1))
+                        random.shuffle(box_numbers)
+                        available_numbers = [num for num in box_numbers if self.is_valid(i, j, num)]
                     # Shuffle the list of available numbers
                     random.shuffle(available_numbers)
                     if available_numbers:
-                        self.board[i][j] = available_numbers[0]  # Fill the cell with the first available number
+                        self.board[i][j] = available_numbers[0]
+                        box_numbers.remove(available_numbers[0])
+
+
+    # def fill_box(self, row_start, col_start):
+    #     box_numbers = list(range(1, self.row_length + 1))  # List of numbers 1 to 9
+    #     random.shuffle(box_numbers)
+    #     idx = 0
+    #     for i in range(row_start, row_start + 3):
+    #         for j in range(col_start, col_start + 3):
+    #             if self.board[i][j] == 0:
+    #                 # Create a list of available numbers for the current cell
+    #                 available_numbers = [num for num in box_numbers if self.is_valid(i, j, num)]
+    #                 # Shuffle the list of available numbers
+    #                 random.shuffle(available_numbers)
+    #                 if available_numbers:
+    #                     self.board[i][j] = available_numbers[0]
+    #                 idx += 1
+
+    # def fill_box(self, row_start, col_start):
+    #     for i in range(row_start, row_start + 3):
+    #         for j in range(col_start, col_start + 3):
+    #             if self.board[i][j] == 0:
+    #                 # Create a list of available numbers for the current cell
+    #                 available_numbers = [num for num in range(1, self.row_length + 1)
+    #                                      if self.is_valid(i, j, num)]
+    #                 # Shuffle the list of available numbers
+    #                 random.shuffle(available_numbers)
+    #                 if available_numbers:
+    #                     self.board[i][j] = available_numbers[0]  # Fill the cell with the first available number
 
     # def fill_box(self, row_start, col_start):
     #     box_num_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -235,23 +262,35 @@ class SudokuGenerator:
 	boolean (whether or not we could solve the board)
     '''
 
+
+
     def fill_remaining(self, row, col):
+        print("fill_remaining 1")
         if (col >= self.row_length and row < self.row_length - 1):
+            print("fill_remaining 2")
             row += 1
             col = 0
+
         if row >= self.row_length and col >= self.row_length:
+            print("fill_remaining 3")
             return True
         if row < self.box_length:
+            print("fill_remaining 4")
             if col < self.box_length:
+                print("fill_remaining 5")
                 col = self.box_length
         elif row < self.row_length - self.box_length:
+            print("fill_remaining 6")
             if col == int(row // self.box_length * self.box_length):
+                print("fill_remaining 7")
                 col += self.box_length
         else:
             if col == self.row_length - self.box_length:
+                print('fill_remaining 8')
                 row += 1
                 col = 0
                 if row >= self.row_length:
+                    print('fill_remaining 9')
                     return True
 
         for num in range(1, self.row_length + 1):
