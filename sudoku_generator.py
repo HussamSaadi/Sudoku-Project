@@ -29,8 +29,9 @@ class SudokuGenerator:
         self.removed_cells = removed_cells
         # self.col_length = row_length
 
-        self.board = [['-' for _ in range(row_length)] for _ in range(row_length)]  # Initialize board
+        self.board = [[0 for _ in range(row_length)] for _ in range(row_length)]  # Initialize board
         self.box_length = int(math.sqrt(row_length))
+        self.unused_in_box = {}
 
 
 
@@ -66,10 +67,10 @@ class SudokuGenerator:
     '''
 
     def print_board(self):
-        reversed_rows = self.board[::-1]
+        reversed_rows = str(self.board[::-1])
         for row_list in reversed_rows:
-            print(' '.join(row_list))
-
+            new_row_list = ' '.join(row_list)
+            print(int(new_row_list))
 
 
 
@@ -160,12 +161,23 @@ class SudokuGenerator:
 	Return: None
     '''
 
+    def test_unused_in_box(self):
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+                for row in range(i, i + 3):
+                    for col in range(j, j + 3):
+                        if self.board[row][col] != 0:
+                            box_num.remove(self.board[row][col])
+                self.unused_in_box[(i, j)] = box_num
+
+
     def fill_box(self, row_start, col_start):
         box_num_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         random.shuffle(box_num_list)
         for i in range(row_start, row_start + 3):
             for j in range(col_start, col_start + 3):
-                if self.board[i][j] == '-':
+                if self.board[i][j] == 0:
                     avail_num = list(self.unused_in_box[(row_start, col_start)])
                     random.shuffle(avail_num)
                     for x_num in avail_num:
@@ -174,15 +186,6 @@ class SudokuGenerator:
                             box_num_list.remove(x_num)
                             break
 
-    def test_unused_in_box(self):
-        for i in range(0, 9, 3):
-            for j in range(0, 9, 3):
-                box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-                for row in range(i, i + 3):
-                    for col in range(j, j + 3):
-                        if self.board[row][col] != '-':
-                            box_num.remove(self.board[row][col])
-                self.unused_in_box[(i, j)] = box_num
 
     '''
     Fills the three boxes along the main diagonal of the board
