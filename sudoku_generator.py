@@ -31,7 +31,7 @@ class SudokuGenerator:
 
         self.board = [[0 for _ in range(row_length)] for _ in range(row_length)]  # Initialize board
         self.box_length = int(math.sqrt(row_length))
-        self.unused_in_box = {}
+        # self.unused_in_box = {}
 
 
 
@@ -171,30 +171,41 @@ class SudokuGenerator:
 	Return: None
     '''
 
-    def test_unused_in_box(self):
-        for i in range(0, 9, 3):
-            for j in range(0, 9, 3):
-                box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-                for row in range(i, i + 3):
-                    for col in range(j, j + 3):
-                        if self.board[row][col] != 0:
-                            box_num.remove(self.board[row][col])
-                self.unused_in_box[(i, j)] = box_num
-
+    # def test_unused_in_box(self):
+    #     for i in range(0, 9, 3):
+    #         for j in range(0, 9, 3):
+    #             box_num = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+    #             for row in range(i, i + 3):
+    #                 for col in range(j, j + 3):
+    #                     if self.board[row][col] != 0:
+    #                         box_num.remove(self.board[row][col])
+    #             self.unused_in_box[(i, j)] = box_num
 
     def fill_box(self, row_start, col_start):
-        box_num_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        random.shuffle(box_num_list)
         for i in range(row_start, row_start + 3):
             for j in range(col_start, col_start + 3):
                 if self.board[i][j] == 0:
-                    avail_num = list(self.unused_in_box[(row_start, col_start)])
-                    random.shuffle(avail_num)
-                    for x_num in avail_num:
-                        if x_num in box_num_list:
-                            self.board[i][j] = x_num
-                            box_num_list.remove(x_num)
-                            break
+                    # Create a list of available numbers for the current cell
+                    available_numbers = [num for num in range(1, self.row_length + 1)
+                                         if self.is_valid(i, j, num)]
+                    # Shuffle the list of available numbers
+                    random.shuffle(available_numbers)
+                    if available_numbers:
+                        self.board[i][j] = available_numbers[0]  # Fill the cell with the first available number
+
+    # def fill_box(self, row_start, col_start):
+    #     box_num_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    #     random.shuffle(box_num_list)
+    #     for i in range(row_start, row_start + 3):
+    #         for j in range(col_start, col_start + 3):
+    #             if self.board[i][j] == 0:
+    #                 avail_num = list(self.unused_in_box[(row_start, col_start)])
+    #                 random.shuffle(avail_num)
+    #                 for x_num in avail_num:
+    #                     if x_num in box_num_list:
+    #                         self.board[i][j] = x_num
+    #                         box_num_list.remove(x_num)
+    #                         break
 
 
     '''
@@ -206,7 +217,7 @@ class SudokuGenerator:
     '''
 
     def fill_diagonal(self):
-        self.test_unused_in_box()
+        # self.test_unused_in_box()
         for box in range(0, 9, 3):
             self.fill_box(box, box)
 
