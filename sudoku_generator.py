@@ -27,8 +27,12 @@ class SudokuGenerator:
     def __init__(self, row_length, removed_cells):
         self.row_length = row_length
         self.removed_cells = removed_cells
-        self.col_length = row_length
-        pass
+        # self.col_length = row_length
+
+        self.board = [['-' for _ in range(row_length)] for _ in range(row_length)]  # Initialize board
+        self.box_length = int(math.sqrt(row_length))
+
+
 
     '''
 	Returns a 2D python list of numbers which represents the board
@@ -38,18 +42,21 @@ class SudokuGenerator:
     '''
 
     def get_board(self):
-        value = '-'
-        col_list = []
-        row_list = []
-        for column in range(self.row_length - 1, -1, -1):
-            col_list.append(value)
+        # If we are creating the board at the init method,
+        # then all this should do is return the board. Hopefully :)
+        # board = [['-' for _ in range(self.row_length)] for _ in range(self.row_length)]
+        return self.board
 
-        for row in range(self.col_length):
-            row_list.append(list(col_list))
-
-        return row_list
-        pass
-
+    # value = '-'
+    # col_list = []
+    # row_list = []
+    # for column in range(self.row_length - 1, -1, -1):
+    #     col_list.append(value)
+    #
+    # for row in range(self.col_length):
+    #     row_list.append(list(col_list))
+    #
+    # return row_list
     '''
 	Displays the board to the console
     This is not strictly required, but it may be useful for debugging purposes
@@ -59,10 +66,13 @@ class SudokuGenerator:
     '''
 
     def print_board(self):
-        reverse_board = self.board[::-1]
-        for row_list in reverse_board:
+        reversed_rows = self.board[::-1]
+        for row_list in reversed_rows:
             print(' '.join(row_list))
-        pass
+
+
+
+
 
     '''
 	Determines if num is contained in the specified row (horizontal) of the board
@@ -278,13 +288,13 @@ class SudokuGenerator:
     Return: list[list] (a 2D Python list to represent the board)
     '''
 
-    def generate_sudoku( size, removed):
-        sudoku = SudokuGenerator(size, removed)
-        sudoku.fill_values()
-        board = sudoku.get_board()
-        sudoku.remove_cells()
-        board = sudoku.get_board()
-        return board
+def generate_sudoku(size, removed):
+    sudoku = SudokuGenerator(size, removed)
+    sudoku.fill_values()
+    board = sudoku.get_board()
+    sudoku.remove_cells()
+    board = sudoku.get_board()
+    return board
 
 
 
