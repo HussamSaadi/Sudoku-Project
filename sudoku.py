@@ -38,6 +38,8 @@ def main():
                     value = event.key - pygame.K_0  # Convert key code to integer value
                     # Place the value in the selected cell
                     sudoku_board.place_number(value)
+                elif event.key == pygame.K_DELETE:  # Check if the pressed key is the delete key
+                    sudoku_board.clear(clicked_cell)
 
         # Update the display
         sudoku_board.draw()

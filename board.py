@@ -32,7 +32,7 @@ class Board:
         BLACK = (0, 0, 0)
         WHITE = (255, 255, 255)
 
-        self.screen.fill(PINK)
+        self.screen.fill(WHITE)
         pygame.draw.rect(self.screen, BLACK, pygame.Rect(15, 15, 720, 720), 10)
         for i in range(1, 10):
             line_width = 5 if i % 3 != 0 else 10
@@ -67,66 +67,16 @@ class Board:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+            self.handle_events()
 
             # Fill the screen with white color
             # screen.fill(PINK)
-            self.handle_events()
+
             # calls draw grid function
             self.draw()
 
             # Update the display
             pygame.display.flip()
-
-
-    #
-    # def draw(self):
-    #     # Draws an outline of the Sudoku grid, with bold lines to delineate the 3x3 boxes.
-    #     # Draws every cell on this board.
-    #     pink = (255, 182, 193)
-    #     white = (255, 255, 255)
-    #
-    #     # Set the window dimensions
-    #     WINDOW_SIZE = (500, 500)
-    #     # display screen
-    #
-    #
-    #     run = True
-    #     while run:
-    #         self.screen = pygame.display.set_mode(WINDOW_SIZE)
-    #         pygame.display.set_caption("Sudoku Grid")
-    #
-    #         self.width, self.height = 9, 9
-    #         CELL_SIZE = WINDOW_SIZE[0] // self.width
-    #         self.screen.fill(pink)
-    #
-    #         for i in range(self.width + 1):
-    #             line_width = 3 if i % 3 == 0 else 1
-    #             pygame.draw.line(self.screen, white, (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE[1]), line_width)
-    #             pygame.draw.line(self.screen, white, (0, i * CELL_SIZE), (WINDOW_SIZE[0], i * CELL_SIZE), line_width)
-    #
-    #         # Bold lines for 3x3 boxes
-    #         for i in range(0, WINDOW_SIZE[0], CELL_SIZE * 3):
-    #             pygame.draw.line(self.screen, white, (i, 0), (i, WINDOW_SIZE[1]), 4)
-    #             pygame.draw.line(self.screen, white, (0, i), (WINDOW_SIZE[0], i), 4)
-    #
-    #         for event in pygame.event.get():
-    #             if event.type == pygame.QUIT:
-    #                 run = False
-    #                 pygame.quit()
-    #                 exit(0)
-    #
-    #
-    #     # Draw grid lines
-    #     for i in range(self.width + 1):
-    #         line_width = 3 if i % 3 == 0 else 1
-    #         pygame.draw.line(self.screen, pink, (i * CELL_SIZE, 0), (i * CELL_SIZE, WINDOW_SIZE[1]), line_width)
-    #         pygame.draw.line(self.screen, pink, (0, i * CELL_SIZE), (WINDOW_SIZE[0], i * CELL_SIZE), line_width)
-    #
-    #     # Bold lines for 3x3 boxes
-    #     for i in range(0, WINDOW_SIZE[0], CELL_SIZE * 3):
-    #         pygame.draw.line(self.screen, pink, (i, 0), (i, WINDOW_SIZE[1]), 4)
-    #         pygame.draw.line(self.screen, pink, (0, i), (WINDOW_SIZE[0], i), 4)
-
 
     def select(self, row, col):
         # Marks the cell at (row, col) in the board as the current selected cell.
@@ -154,17 +104,17 @@ class Board:
     def clear(self):
         # Clears the value cell. Note that the user can only remove the cell values and sketched value that are
         # filled by themselves.
-        if self.selected_cell:
+        if self.selected_cell is not None:
             row, col = self.selected_cell
             # Check if the cell has a value filled by the user (not part of the original puzzle)
             if self.is_editable_cell(row, col):
                 # Clear the value and sketch from the selected cell
-                self.board[row][col] = 0  # Clear the value
-                self.sketches[row][col] = None  # Clear the sketch
+                self.board[row][col] = 0 # Clear the value
+                # self.sketches[row][col] = None  # Clear the sketch
 
     def is_editable_cell(self, row, col):
         # Helper method to check if a cell is editable by the user
-        return self.original_board[row][col] == 0
+        return self.board[row][col] == 0
 
     def sketch(self, value):
         # Sets the sketched value of the current selected cell equal to user entered value.
@@ -209,14 +159,19 @@ class Board:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 row, col = self.click(x, y)
-                self.select_cell(row, col)
-            elif event.type == pygame.KEYDOWN:
+                self.select(row, col)
+            if event.type == pygame.KEYDOWN:
                 if pygame.K_1 <= event.key <= pygame.K_9:
+                    print("Number key pressed")
                     value = event.key - pygame.K_0
                     self.place_number(value)
+                elif event.key == pygame.K_DELETE:
+                    print("Delete key pressed")
+                    self.clear()
+
 
     def is_full(self):
         # Returns a Boolean value indicating whether the board is full or not
@@ -263,4 +218,3 @@ class Board:
                 return False
             seen.add(val)
         return True
-
