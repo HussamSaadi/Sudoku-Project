@@ -124,14 +124,27 @@ class SudokuGenerator:
     '''
 
     def valid_in_box(self, row_start, col_start, num):
-        for row in range(3):
-            for col in range(3):
-                # Check if indices are within the bounds of the board
-                if (row_start + row) >= self.row_length or (col_start + col) >= self.row_length:
-                    return False
-                if self.board[row_start + row][col_start + col] == num:
-                    return False
-        return True
+        box_numbers_list = []
+        for row in range(row_start, row_start + 3):
+            for col in range(col_start, col_start + 3):
+                box_numbers_list.append(self.board[row][col])
+        if num in box_numbers_list:
+            return False
+        else:
+            return True
+
+
+
+        # Rewrote this version:
+
+        # for row in range(3):
+        #     for col in range(3):
+        #         # Check if indices are within the bounds of the board
+        #         if (row_start + row) >= self.row_length or (col_start + col) >= self.row_length:
+        #             return False
+        #         if self.board[row_start + row][col_start + col] == num:
+        #             return False
+        # return True
 
     # def valid_in_box(self, row_start, col_start, num):
     #     for row in range(3):
@@ -153,13 +166,37 @@ class SudokuGenerator:
     '''
 
     def is_valid(self, row, col, num):
-        check_row = self.valid_in_row(row, num)
-        check_col = self.valid_in_col(col, num)
-        check_box = self.valid_in_box(row, col, num)
-        if check_row == False or check_col == False or check_box == False:
-            return False
-        else:
+        initial_row = 0
+        initial_col = 0
+        if row == 0 or row == 1 or row == 2:
+            initial_row = 0
+        elif row == 3 or row == 4 or row == 5:
+            initial_row = 3
+        elif row == 6 or row == 7 or row == 8:
+            initial_row = 6
+        if col == 0 or col == 1 or col == 2:
+            initial_col = 0
+        elif col == 3 or col == 4 or col == 5:
+            initial_col = 3
+        elif col == 6 or col == 7 or col == 8:
+            initial_col = 6
+        if self.valid_in_row(row, num) is True and self.valid_in_col(col, num) is True and self.valid_in_box(initial_row,
+                                                                                                             initial_col,
+                                                                                                             num) is True:
             return True
+        else:
+            return False
+
+
+        # Rewrote this version:
+
+        # check_row = self.valid_in_row(row, num)
+        # check_col = self.valid_in_col(col, num)
+        # check_box = self.valid_in_box(row, col, num)
+        # if check_row == False or check_col == False or check_box == False:
+        #     return False
+        # else:
+        #     return True
 
     '''
     Fills the specified 3x3 box with values
@@ -175,23 +212,34 @@ class SudokuGenerator:
     # Update the fill_box method in SudokuGenerator class
 
     def fill_box(self, row_start, col_start):
-        box_numbers = list(range(1, self.row_length + 1))  # List of numbers 1 to 9
-        random.shuffle(box_numbers)
-        for i in range(row_start, row_start + 3):
-            for j in range(col_start, col_start + 3):
-                if self.board[i][j] == 0:
-                    # Create a list of available numbers for the current cell
-                    available_numbers = [num for num in box_numbers if self.is_valid(i, j, num)]
-                    # If no available numbers, reset box_numbers and shuffle again
-                    if not available_numbers:
-                        box_numbers = list(range(1, self.row_length + 1))
-                        random.shuffle(box_numbers)
-                        available_numbers = [num for num in box_numbers if self.is_valid(i, j, num)]
-                    # Shuffle the list of available numbers
-                    random.shuffle(available_numbers)
-                    if available_numbers:
-                        self.board[i][j] = available_numbers[0]
-                        box_numbers.remove(available_numbers[0])
+        box_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        for col in range(0, 3):
+            for row in range(0, 3):
+                random_numbers = random.choice(box_numbers)
+                if self.valid_in_box(row_start, col_start, random_numbers) is True:
+                    self.board[row_start + col][col_start + row] = random_numbers
+                    box_numbers.remove(random_numbers)
+
+
+        # Rewrote this version:
+
+        # box_numbers = list(range(1, self.row_length + 1))  # List of numbers 1 to 9
+        # random.shuffle(box_numbers)
+        # for i in range(row_start, row_start + 3):
+        #     for j in range(col_start, col_start + 3):
+        #         if self.board[i][j] == 0:
+        #             # Create a list of available numbers for the current cell
+        #             available_numbers = [num for num in box_numbers if self.is_valid(i, j, num)]
+        #             # If no available numbers, reset box_numbers and shuffle again
+        #             if not available_numbers:
+        #                 box_numbers = list(range(1, self.row_length + 1))
+        #                 random.shuffle(box_numbers)
+        #                 available_numbers = [num for num in box_numbers if self.is_valid(i, j, num)]
+        #             # Shuffle the list of available numbers
+        #             random.shuffle(available_numbers)
+        #             if available_numbers:
+        #                 self.board[i][j] = available_numbers[0]
+        #                 box_numbers.remove(available_numbers[0])
 
 
     # def fill_box(self, row_start, col_start):
@@ -330,7 +378,7 @@ class SudokuGenerator:
 
     def remove_cells(self):
         count = 0
-        while count != (self.removed_cells + 1):
+        while count != (self.removed_cells):
             row = random.randint(0, 8)
             column = random.randint(0, 8)
             if self.board[row][column] != 0:
