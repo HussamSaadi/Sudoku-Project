@@ -134,6 +134,110 @@ def main():
 
     # easy, medium, hard = "easy", "medium", "hard"
 
+# displays congrats screen if user solves board correctly
+def congrats():
+    pygame.init()
+
+    width, height = 800, 800
+    screen = pygame.display.set_mode((width, height))
+
+    # define colors + font
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    screen.fill(WHITE)
+    font = pygame.font.SysFont("arialblack", 60)
+
+    # image
+    img = pygame.image.load('buttonIcons/confetti.jpeg')
+    r = img.get_rect()
+    r.center = screen.get_rect().center
+    screen.blit(img, r)
+
+    pygame.display.flip()
+
+    def draw_text(screen, text, font, text_col, x, y):
+        screen_text = font.render(text, True, text_col)
+        screen.blit(screen_text, (x, y))
+
+    # load images
+    exit_img = pygame.image.load('buttonIcons/exit.png').convert_alpha()
+
+    exit_button = button.Button(323, 420, exit_img, 0.7)
+
+    # run loop
+    run = True
+    while run:
+        draw_text(screen, "Game won!", font, BLACK, 220, 300)
+        if exit_button.draw(screen):
+            print("Exit!")
+            pygame.quit()
+            sys.exit()
+        for event in pygame.event.get():
+            # if event.type == pygame.
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        pygame.display.update()
+
+def game_over():
+    import pygame
+    import sys
+    import button
+    # import menu
+    # from menu import draw_text
+    pygame.init()
+
+    width, height = 800, 800
+    screen = pygame.display.set_mode((width, height))
+
+    # define colors + font
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    screen.fill(WHITE)
+    font = pygame.font.SysFont("arialblack", 60)
+
+    # image
+    img = pygame.image.load('buttonIcons/sad_face2.jpeg')
+    r = img.get_rect()
+    r.center = screen.get_rect().center
+    screen.blit(img, r)
+
+    pygame.display.flip()
+
+    def draw_text(screen, text, font, text_col, x, y):
+        screen_text = font.render(text, True, text_col)
+        screen.blit(screen_text, (x, y))
+
+    # load images
+    restart_img = pygame.image.load('buttonIcons/restart.png').convert_alpha()
+
+    restart_button = button.Button(323, 650, restart_img, 0.7)
+
+    restart_game = False
+
+    # run loop
+    run = True
+    while run:
+        # draw_text(screen, "Game over", font, BLACK, 200, 75)
+
+        if restart_game:
+            main()
+        # display menu
+        else:
+            # screen.blit(img, r)
+            draw_text(screen, "Game over", font, BLACK, 300, 75)
+
+        for event in pygame.event.get():
+            # if event.type == pygame.
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if restart_button.draw(screen):
+                print("Restart")
+                restart_game = True
+        pygame.display.update()
+    return restart_game
+
 def second_main(set_level):
     sudoku_board = Board(width, height, screen, set_level)
 
@@ -161,6 +265,10 @@ def second_main(set_level):
 
             final_destination = sudoku_board.check_board()
             if final_destination == True:
+                game_over_screen = game_over()
+                if game_over_screen:
+                    continue
+
                 print("Congratulations! You have solved the Sudoku!")
             else:
                 print("Wrong! You solved it wrong!")
