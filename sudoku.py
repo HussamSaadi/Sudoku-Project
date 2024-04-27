@@ -154,11 +154,13 @@ def second_main(set_level):
         pygame.display.flip()
 
         # sudoku_board.handle_events()
+
+
+
         if sudoku_board.is_full():
 
             final_destination = sudoku_board.check_board()
-            if final_destination == False:
-
+            if final_destination == True:
                 print("Congratulations! You have solved the Sudoku!")
             else:
                 print("Wrong! You solved it wrong!")
