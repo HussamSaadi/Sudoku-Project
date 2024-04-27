@@ -90,8 +90,10 @@ while run:
             # menu_state = "new screen"
     if med_button.draw(screen):
         print("Medium")
+        main()
     if hard_button.draw(screen):
         print("Hard")
+        main()
     # menu_state = "main"
 
     draw_text("Welcome to Sudoku", font, BLACK, 185, 70)
