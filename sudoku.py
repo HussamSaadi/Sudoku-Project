@@ -116,12 +116,13 @@ def congrats():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if exit_button.draw(screen):
-                print("Exit!")
-                pygame.quit()
-                sys.exit()
             # draw buttons
         exit_button.draw(screen)
+
+        if exit_button.draw(screen):
+            print("Exit!")
+            pygame.quit()
+            sys.exit()
 
         pygame.display.update()
 
@@ -201,6 +202,7 @@ def main():
                     print("Reset")
                 elif restart_button.rect.collidepoint(x, y):
                     print("Restart")
+                    main_menu()
                 elif exit_button.rect.collidepoint(x, y):
                     print("Exit")
                     pygame.quit()
@@ -226,8 +228,11 @@ def main():
                 congrats_screen = congrats()
                 # if game_over_screen:
                 if congrats_screen:
-                    continue
-                print("Congratulations! You have solved the Sudoku!")
+                    continue_playing = True
+                    while continue_playing:
+                        continue_playing = congrats()
+                else:
+                    print("Congratulations! You have solved the Sudoku!")
             else:
                 print("Wrong! You solved it wrong!")
                 running = False
