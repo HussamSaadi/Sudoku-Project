@@ -8,6 +8,7 @@ pygame.init()
 # Set up the display
 width, height = 800, 800
 screen = pygame.display.set_mode((width, height))
+font = pygame.font.SysFont("arialblack", 40)
 pygame.display.set_caption("SUDOKU")
 
 # Define colors
@@ -44,7 +45,6 @@ def main():
 
         pygame.display.flip()
         if sudoku_board.is_full():
-            print("Congratulations! You have solved the Sudoku!")
             running = False
     print("Game loop exited")
 
