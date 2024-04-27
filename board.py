@@ -39,8 +39,6 @@ class Board:
         self.board_new = []
         self.selected_cell_number = 0
 
-
-
     def generated_board_grab(self):
         return self.generated_board
 
@@ -72,7 +70,6 @@ class Board:
                              line_width)
             pygame.draw.line(self.screen, BLACK, (start_x, start_y + (i * 80)), (start_x + grid_size, start_y + (i * 80)),
                              line_width)
-
         # load button images
         reset_img = pygame.image.load('buttonIcons/reset.png').convert_alpha()
         restart_img = pygame.image.load('buttonIcons/restart.png').convert_alpha()
@@ -84,37 +81,37 @@ class Board:
         exit_button = button.Button(493, 730, exit_img, 0.7)
 
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                if x >= start_x and x <= end_x and y >= start_y and y <= end_y:
-                    row, col = self.click(x, y)
-                    self.select(row, col)
-                else:
-                    if reset_button.rect.collidepoint(x, y):
-                        print("Reset")
-
-                    # Add code to handle reset button action here
-                    elif restart_button.rect.collidepoint(x, y):
-                        print("Restart")
-                    # Add code to handle restart button action here
-                    elif exit_button.rect.collidepoint(x, y):
-                        print("Exit")
-                        pygame.quit()
-                        sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if pygame.K_1 <= event.key <= pygame.K_9:
-                    print("Number key pressed")
-                    value = event.key - pygame.K_0
-                    self.place_number(value)
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_BACKSPACE:
-                    print("Delete key pressed")
-                    self.clear()
-
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         pygame.quit()
+        #         sys.exit()
+        #     if event.type == pygame.MOUSEBUTTONDOWN:
+        #         x, y = pygame.mouse.get_pos()
+        #         if x >= start_x and x <= end_x and y >= start_y and y <= end_y:
+        #             row, col = self.click(x, y)
+        #             self.select(row, col)
+        #         else:
+        #             if reset_button.rect.collidepoint(x, y):
+        #                 print("Reset")
+        #
+        #             # Add code to handle reset button action here
+        #             elif restart_button.rect.collidepoint(x, y):
+        #                 print("Restart")
+        #             # Add code to handle restart button action here
+        #             elif exit_button.rect.collidepoint(x, y):
+        #                 print("Exit")
+        #                 pygame.quit()
+        #                 sys.exit()
+        #     if event.type == pygame.KEYDOWN:
+        #         if pygame.K_1 <= event.key <= pygame.K_9:
+        #             print("Number key pressed")
+        #             value = event.key - pygame.K_0
+        #             self.place_number(value)
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_BACKSPACE:
+        #             print("Delete key pressed")
+        #             self.clear()
+        # draw buttons
         reset_button.draw(self.screen)
         restart_button.draw(self.screen)
         exit_button.draw(self.screen)

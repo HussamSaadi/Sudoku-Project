@@ -75,17 +75,17 @@ def main_menu():  # main menu screen
             if easy_button.draw(screen):
                 set_level = 1
                 print("Easy")
-                second_main(set_level)
+                return set_level
                 # menu_state = "new screen"
             if med_button.draw(screen):
                 set_level = 40
                 print("Medium")
-                second_main(set_level)
+                return set_level
                 # main()
             if hard_button.draw(screen):
                 set_level = 50
                 print("Hard")
-                second_main(set_level)
+                return set_level
         # draw buttons
         easy_button.draw(screen)
         med_button.draw(screen)
@@ -154,9 +154,13 @@ def game_over():
         restart_button.draw(screen)
 
         pygame.display.update()
-def second_main(set_level):
-    sudoku_board = Board(width, height, screen, set_level)
+# def second_main(set_level):
+#
+#     return sudoku_board
+def main():
 
+    set_level = main_menu()
+    sudoku_board = Board(width, height, screen, set_level)
     # Generate initial board
     # generated_board = generate_sudoku(9, 3)
     generated_board = sudoku_board.generated_board_grab()
@@ -166,15 +170,56 @@ def second_main(set_level):
             value = generated_board[row][col]
             if value != 0:
                 sudoku_board.cells[row][col].set_cell_value(value)
-def main():
+
+    # load button images
+    reset_img = pygame.image.load('buttonIcons/reset.png').convert_alpha()
+    restart_img = pygame.image.load('buttonIcons/restart.png').convert_alpha()
+    exit_img = pygame.image.load('buttonIcons/exit.png').convert_alpha()
+
+    # create button instances
+    reset_button = button.Button(153, 730, reset_img, 0.7)
+    restart_button = button.Button(323, 730, restart_img, 0.7)
+    exit_button = button.Button(493, 730, exit_img, 0.7)
+
+    # main_menu()
+
+    # sudoku_board = second_main(set_level)
+
     running = True
+
     while running:
         sudoku_board.draw()
-        pygame.display.flip()
-
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Handle mouse click events
+                x, y = pygame.mouse.get_pos()
+                # Handle button clicks
+                if reset_button.rect.collidepoint(x, y):
+                    print("Reset")
+                elif restart_button.rect.collidepoint(x, y):
+                    print("Restart")
+                elif exit_button.rect.collidepoint(x, y):
+                    print("Exit")
+                    pygame.quit()
+                    sys.exit()
+                else:
+                    # Handle cell clicks
+                    row, col = sudoku_board.click(x, y)
+                    sudoku_board.select(row, col)
+            elif event.type == pygame.KEYDOWN:
+                # Handle key presses
+                if pygame.K_1 <= event.key <= pygame.K_9:
+                    print("Number key pressed")
+                    value = event.key - pygame.K_0
+                    sudoku_board.place_number(value)
+                elif event.key == pygame.K_BACKSPACE:
+                    print("Delete key pressed")
+                    sudoku_board.clear()
         # sudoku_board.handle_events()
         if sudoku_board.is_full():
-
             final_destination = sudoku_board.check_board()
             if final_destination:
                 # game_over_screen = game_over()
@@ -186,11 +231,15 @@ def main():
             else:
                 print("Wrong! You solved it wrong!")
                 running = False
+                # Draw buttons
+        reset_button.draw(sudoku_board.screen)
+        restart_button.draw(sudoku_board.screen)
+        exit_button.draw(sudoku_board.screen)
 
-
+    pygame.display.flip()
 
 if __name__ == "__main__":
-    main_menu()
+    main()
 
 # import pygame, sys
 # from board import *
