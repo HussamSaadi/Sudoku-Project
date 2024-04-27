@@ -35,7 +35,7 @@ class Board:
         # self.generated_board = self.generate_sudoku_puzzle()
         self.user_numbers = [row[:] for row in self.generated_board]
         self.cell_value = [[0 for j in range(0, 9)] for i in range(0, 9)]
-        self.start_solution_board = generate_sudoku_solved(9,self.difficulty)
+
         self.board_new = []
         self.selected_cell_number = 0
 
@@ -421,3 +421,65 @@ class Board:
     #     if self.difficulty == 'hard':
     #         self.difficulty_number = 50
     #         return generate_sudoku(9, self.difficulty)
+
+    def test_rows_for_duplicates(self):
+        # Test rows for duplicates
+        for row in range(9):
+            # Create a list of numbers for the current row with some duplicates and some unique values
+            test_row = [1, 2, 3, 4, 5, 6, 7, 8, 9]  # Example row with no duplicates
+            test_row_with_duplicates = [1, 2, 3, 4, 5, 6, 6, 8, 9]  # Example row with duplicates
+
+            # Set the values of cells in the current row
+            for col in range(9):
+                test_row[col] = self.cells[row][col].value
+                test_row_with_duplicates[col] = self.cells[row][col].value
+
+            # Check if the is_valid_group method correctly identifies duplicates and non-duplicates
+            assert self.is_valid_group(test_row) == True, f"Row {row} contains no duplicates"
+            assert self.is_valid_group(test_row_with_duplicates) == False, f"Row {row} contains duplicates"
+
+    def test_columns_for_duplicates(self):
+        # Test columns for duplicates
+        for col in range(9):
+            # Create a list of numbers for the current column with some duplicates and some unique values
+            test_col = [1, 2, 3, 4, 5, 6, 7, 8, 9]  # Example column with no duplicates
+            test_col_with_duplicates = [1, 2, 3, 4, 5, 6, 6, 8, 9]  # Example column with duplicates
+
+            # Set the values of cells in the current column
+            for row in range(9):
+                test_col[row] = self.cells[row][col].value
+                test_col_with_duplicates[row] = self.cells[row][col].value
+
+            # Check if the is_valid_group method correctly identifies duplicates and non-duplicates
+            assert self.is_valid_group(test_col) == True, f"Column {col} contains no duplicates"
+            assert self.is_valid_group(test_col_with_duplicates) == False, f"Column {col} contains duplicates"
+
+    def test_3x3_grids_for_duplicates(self):
+        # Test 3x3 grids for duplicates
+        for row_start in range(0, 9, 3):
+            for col_start in range(0, 9, 3):
+                # Create a list of numbers for the current 3x3 grid with some duplicates and some unique values
+                test_grid = [1, 2, 3, 4, 5, 6, 7, 8, 9]  # Example grid with no duplicates
+                test_grid_with_duplicates = [1, 2, 3, 4, 5, 6, 6, 8, 9]  # Example grid with duplicates
+
+                # Set the values of cells in the current 3x3 grid
+                index = 0
+                for i in range(3):
+                    for j in range(3):
+                        test_grid[index] = self.cells[row_start + i][col_start + j].value
+                        test_grid_with_duplicates[index] = self.cells[row_start + i][col_start + j].value
+                        index += 1
+
+                # Check if the is_valid_group method correctly identifies duplicates and non-duplicates
+                assert self.is_valid_group(
+                    test_grid) == True, f"Grid at ({row_start}, {col_start}) contains no duplicates"
+                assert self.is_valid_group(
+                    test_grid_with_duplicates) == False, f"Grid at ({row_start}, {col_start}) contains duplicates"
+
+def main():
+    test_rows_for_duplicates()
+    test_columns_for_duplicates
+
+
+if __name__ == "__main__":
+    main()
