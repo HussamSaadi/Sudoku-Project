@@ -1,7 +1,7 @@
 import pygame
 import sys
 import button
-from sudoku import main
+from sudokuDELETE import main
 
 from pygame.locals import *
 
