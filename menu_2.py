@@ -1,7 +1,7 @@
 import pygame
 import sys
 import button
-from sudoku_test import main_menu
+from sudoku import main_menu
 
 from pygame.locals import *
 

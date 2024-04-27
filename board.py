@@ -96,6 +96,7 @@ class Board:
                 else:
                     if reset_button.rect.collidepoint(x, y):
                         print("Reset")
+
                     # Add code to handle reset button action here
                     elif restart_button.rect.collidepoint(x, y):
                         print("Restart")
@@ -476,10 +477,10 @@ class Board:
                 assert self.is_valid_group(
                     test_grid_with_duplicates) == False, f"Grid at ({row_start}, {col_start}) contains duplicates"
 
-def main():
-    test_rows_for_duplicates()
-    test_columns_for_duplicates
+# def main():
+#     test_rows_for_duplicates()
+#     test_columns_for_duplicates
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

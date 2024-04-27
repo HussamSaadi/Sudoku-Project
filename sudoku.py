@@ -43,7 +43,8 @@ PINK = (255, 174, 201, 255)
 BLUE = (0, 162, 232, 255)
 LIGHT_BLUE = (173, 216, 230)
 
-def main_menu(): # main menu screen
+
+def main_menu():  # main menu screen
     pygame.display.set_caption("Sudoku")
 
     # load button images
@@ -153,7 +154,6 @@ def game_over():
         restart_button.draw(screen)
 
         pygame.display.update()
-
 def second_main(set_level):
     sudoku_board = Board(width, height, screen, set_level)
 
@@ -166,7 +166,7 @@ def second_main(set_level):
             value = generated_board[row][col]
             if value != 0:
                 sudoku_board.cells[row][col].set_cell_value(value)
-
+def main():
     running = True
     while running:
         sudoku_board.draw()
@@ -176,17 +176,18 @@ def second_main(set_level):
         if sudoku_board.is_full():
 
             final_destination = sudoku_board.check_board()
-            if final_destination == True:
+            if final_destination:
                 # game_over_screen = game_over()
                 congrats_screen = congrats()
-                #if game_over_screen:
+                # if game_over_screen:
                 if congrats_screen:
                     continue
-
                 print("Congratulations! You have solved the Sudoku!")
             else:
                 print("Wrong! You solved it wrong!")
                 running = False
+
+
 
 if __name__ == "__main__":
     main_menu()
