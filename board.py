@@ -16,11 +16,22 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
+        # self.difficulty_number = 0
         self.selected_cell = None  # Initialize selected cell as None
         self.cells = [[Cell(0, row, col, screen) for col in range(9)] for row in range(9)]
         self.font = pygame.font.Font(None, 65)
         self.original_board = [[cell.value for cell in row] for row in self.cells]
         self.board = [[0 for _ in range(width)] for _ in range(height)]
+        # self.generated_board = generate_sudoku(9, 40)
+        # self.other_board = self.generated_board
+        self.generated_board = generate_sudoku(9, self.difficulty)
+        self.other_generated_board = self.generated_board
+        # self.generated_board = self.generate_sudoku_puzzle()
+        self.user_numbers = [row[:] for row in self.generated_board]
+        self.cell_value = [[0 for j in range(0, 9)] for i in range(0, 9)]
+
+    def generated_board_grab(self):
+        return self.generated_board
 
     def draw(self):
         self.screen.fill(LIGHT_BLUE)
@@ -137,6 +148,14 @@ class Board:
             row, col = self.selected_cell
             if self.cells[row][col].value == 0:
                 self.cells[row][col].set_cell_value(value)
+                self.user_numbers[row][col] = value
+
+
+        # Revised this version:
+        # if self.selected_cell is not None:
+        #     row, col = self.selected_cell
+        #     if self.cells[row][col].value == 0:
+        #         self.cells[row][col].set_cell_value(value)
 
     def is_full(self):
         for row in range(9):
@@ -201,10 +220,38 @@ class Board:
                         #sys.exit()
 
     def update_board(self):
+        for row in range(0, 9):
+            for col in range(0, 9):  # loops through each row and col
+                if self.cell_value[row][col] == 0:
+                    pass
+                else:
+                    self.other_generated_board[row][col] = self.cells[row][col].value
+        return self.other_generated_board
         # Updates the underlying 2D board with the values in all cells.
-        for row in range(9):
-            for col in range(9):
-                self.board[row][col] = self.cells[row][col].value
+        # for row in range(9):
+        #     for col in range(9):
+        #         self.board[row][col] = self.cells[row][col].value
+
+    def get_row_values(self, row):
+
+        return self.other_generated_board[row]
+
+    def get_column_values(self, col):
+
+        return self.other_generated_board[col]
+
+    def get_grid_values(self, row_start, col_start):
+        # Initialize an empty list to store the values in the 3x3 grid
+        grid_values = []
+
+        # Iterate over the cells in the 3x3 grid
+        for i in range(row_start, row_start + 3):
+            for j in range(col_start, col_start + 3):
+                # Append the value of the current cell to the grid_values list
+                grid_values.append(self.other_generated_board[i][j])
+
+        # Return the list of values in the 3x3 grid
+        return grid_values
 
     def find_empty(self):
         # Finds an empty cell and returns its row and col as a tuple (row, col).
@@ -215,17 +262,64 @@ class Board:
         return None  # Return None if no empty cell is found
 
     def check_board(self):
-        # Check whether the Sudoku board is solved correctly.
-        # Check rows, columns, and 3x3 grids for duplicate values
-        for i in range(9):
-            if not self.is_valid_group([self.board[i][j] for j in range(9)]) or \
-                    not self.is_valid_group([self.board[j][i] for j in range(9)]):
+        if not self.is_full():
+            return False
+
+            # Check rows and columns for duplicates
+        for row in range(9):
+            # Check if the values in the current row form a valid group
+            if not self.is_valid_group(self.get_row_values(row)):
                 return False
-        for i in range(0, 9, 3):
-            for j in range(0, 9, 3):
-                if not self.is_valid_group([self.board[i + m][j + n] for n in range(3) for m in range(3)]):
+
+        for col in range(9):
+            # Check if the values in the current column form a valid group
+            if not self.is_valid_group(self.get_column_values(col)):
+                return False
+
+            # Check 3x3 grids for duplicates
+        for row_start in range(0, 9, 3):
+            for col_start in range(0, 9, 3):
+                # Check if the values in the current 3x3 grid form a valid group
+                if not self.is_valid_group(self.get_grid_values(row_start, col_start)):
                     return False
+
+            # If all checks pass, return True
         return True
+        # REVISED THIS VERSION ABOVE
+        # Check rows and columns for duplicates
+        # for row in range(9):
+        #     # Check if the values in the current row form a valid group
+        #     if not self.is_valid_group(self.get_row_values(row)):
+        #         return False
+        #
+        #     print("row")
+        # for col in range(9):
+        #     # Check if the values in the current column form a valid group
+        #     if not self.is_valid_group(self.get_column_values(col)):
+        #         return False
+        #     print("col")
+        #
+        # # Check 3x3 grids for duplicates
+        # for row_start in range(0, 9, 3):
+        #     for col_start in range(0, 9, 3):
+        #         # Check if the values in the current 3x3 grid form a valid group
+        #         if not self.is_valid_group(self.get_grid_values(row_start, col_start)):
+        #             return False
+        #     print("row,col")
+        # # If all checks pass, return True
+        # return True
+
+    # def check_board(self):
+    #     # Check whether the Sudoku board is solved correctly.
+    #     # Check rows, columns, and 3x3 grids for duplicate values
+    #     for i in range(9):
+    #         if not self.is_valid_group([self.board[i][j] for j in range(9)]) or not self.is_valid_group([self.board[j][i] for j in range(9)]):
+    #             return False
+    #     for i in range(0, 9, 3):
+    #         for j in range(0, 9, 3):
+    #             if not self.is_valid_group([self.board[i + m][j + n] for n in range(3) for m in range(3)]):
+    #                 return False
+    #     return True
 
     def is_valid_group(self, group):
         # Helper function to check if a group (row, column, or 3x3 grid) contains only unique values
@@ -235,3 +329,14 @@ class Board:
                 return False
             seen.add(val)
         return True
+
+    # def generate_sudoku_puzzle(self):
+    #     if self.difficulty == 'easy':
+    #         self.difficulty_number = 30
+    #         return generate_sudoku(9, self.difficulty)
+    #     if self.difficulty == 'medium':
+    #         self.difficulty_number = 40
+    #         return generate_sudoku(9, self.difficulty)
+    #     if self.difficulty == 'hard':
+    #         self.difficulty_number = 50
+    #         return generate_sudoku(9, self.difficulty)
