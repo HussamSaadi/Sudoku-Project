@@ -80,6 +80,8 @@ class Board:
                     # Add code to handle restart button action here
                     elif exit_button.rect.collidepoint(x, y):
                         print("Exit")
+                        pygame.quit()
+                        sys.exit()
             if event.type == pygame.KEYDOWN:
                 if pygame.K_1 <= event.key <= pygame.K_9:
                     print("Number key pressed")
