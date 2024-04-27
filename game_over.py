@@ -15,7 +15,7 @@ screen.fill(WHITE)
 font = pygame.font.SysFont("arialblack", 60)
 
 # image
-img = pygame.image.load('buttonIcons/confetti.jpeg')
+img = pygame.image.load('buttonIcons/sad_face2.jpeg')
 r = img.get_rect()
 r.center = screen.get_rect().center
 screen.blit(img, r)
@@ -26,23 +26,20 @@ def draw_text(screen, text, font, text_col, x, y):
     screen.blit(screen_text, (x,y))
 
 # load images
-exit_img = pygame.image.load('buttonIcons/exit.png').convert_alpha()
+restart_img = pygame.image.load('buttonIcons/restart.png').convert_alpha()
 
-exit_button = button.Button(323, 420, exit_img, 0.7)
+restart_button = button.Button(323, 650, restart_img, 0.7)
 
 # run loop
 run = True
 while run:
-    draw_text(screen,"Game won!", font, BLACK, 220, 300)
+    draw_text(screen,"Game over :(", font, BLACK, 200, 75)
 
-    if exit_button.draw(screen):
-        print("Exit!")
-        pygame.quit()
-        sys.exit()
+    if restart_button.draw(screen):
+        print("Restart")
     for event in pygame.event.get():
         # if event.type == pygame.
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
     pygame.display.update()
-
