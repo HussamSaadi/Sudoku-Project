@@ -85,13 +85,16 @@ while run:
     # check menu state
     # if menu_state == "main":
     if easy_button.draw(screen):
+        set_level = 30
         print("Easy")
         main()
             # menu_state = "new screen"
     if med_button.draw(screen):
+        set_level = 40
         print("Medium")
         main()
     if hard_button.draw(screen):
+        set_level = 50
         print("Hard")
         main()
     # menu_state = "main"

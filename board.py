@@ -16,11 +16,20 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
+        # self.difficulty_number = 0
         self.selected_cell = None  # Initialize selected cell as None
         self.cells = [[Cell(0, row, col, screen) for col in range(9)] for row in range(9)]
         self.font = pygame.font.Font(None, 65)
         self.original_board = [[cell.value for cell in row] for row in self.cells]
         self.board = [[0 for _ in range(width)] for _ in range(height)]
+        # self.generated_board = generate_sudoku(9, 40)
+        # self.other_board = self.generated_board
+        self.generated_board = generate_sudoku(9, self.difficulty)
+        # self.generated_board = self.generate_sudoku_puzzle()
+        self.user_numbers = [row[:] for row in self.generated_board]
+
+    def generated_board_grab(self):
+        return self.generated_board
 
     def draw(self):
         self.screen.fill(LIGHT_BLUE)
@@ -137,6 +146,14 @@ class Board:
             row, col = self.selected_cell
             if self.cells[row][col].value == 0:
                 self.cells[row][col].set_cell_value(value)
+                self.user_numbers[row][col] = value
+
+
+        # Revised this version:
+        # if self.selected_cell is not None:
+        #     row, col = self.selected_cell
+        #     if self.cells[row][col].value == 0:
+        #         self.cells[row][col].set_cell_value(value)
 
     def is_full(self):
         for row in range(9):
@@ -218,8 +235,7 @@ class Board:
         # Check whether the Sudoku board is solved correctly.
         # Check rows, columns, and 3x3 grids for duplicate values
         for i in range(9):
-            if not self.is_valid_group([self.board[i][j] for j in range(9)]) or \
-                    not self.is_valid_group([self.board[j][i] for j in range(9)]):
+            if not self.is_valid_group([self.board[i][j] for j in range(9)]) or not self.is_valid_group([self.board[j][i] for j in range(9)]):
                 return False
         for i in range(0, 9, 3):
             for j in range(0, 9, 3):
@@ -235,3 +251,14 @@ class Board:
                 return False
             seen.add(val)
         return True
+
+    # def generate_sudoku_puzzle(self):
+    #     if self.difficulty == 'easy':
+    #         self.difficulty_number = 30
+    #         return generate_sudoku(9, self.difficulty)
+    #     if self.difficulty == 'medium':
+    #         self.difficulty_number = 40
+    #         return generate_sudoku(9, self.difficulty)
+    #     if self.difficulty == 'hard':
+    #         self.difficulty_number = 50
+    #         return generate_sudoku(9, self.difficulty)
