@@ -24,11 +24,22 @@ class Board:
         self.board = [[0 for _ in range(width)] for _ in range(height)]
         # self.generated_board = generate_sudoku(9, 40)
         # self.other_board = self.generated_board
-        self.generated_board = generate_sudoku(9, self.difficulty)
+        self.sudoku = SudokuGenerator(9, self.difficulty)
+        self.sudoku.fill_values()
+        self.solved_board = self.sudoku.get_board()
+        self.sudoku.remove_cells()
+        self.generated_board = self.sudoku.get_board()
+
+        # self.generated_board = generate_sudoku(9, self.difficulty)
         self.other_generated_board = self.generated_board
         # self.generated_board = self.generate_sudoku_puzzle()
         self.user_numbers = [row[:] for row in self.generated_board]
         self.cell_value = [[0 for j in range(0, 9)] for i in range(0, 9)]
+        self.start_solution_board = generate_sudoku_solved(9,self.difficulty)
+        self.board_new = []
+        self.selected_cell_number = 0
+
+
 
     def generated_board_grab(self):
         return self.generated_board
@@ -141,14 +152,31 @@ class Board:
             for c in range(9):
                 self.cells[r][c].selected = False  # Deselect all cells
         self.cells[row][col].selected = True
+        self.selected_cell_number = self.board[row][col]
 
+    # def sketch(self,value):
+    #     if self.cells[row][col].value != 0:
+    #         self.selected_cell.set_sketched_value(value)
 
     def place_number(self, value):
         if self.selected_cell is not None:
             row, col = self.selected_cell
             if self.cells[row][col].value == 0:
                 self.cells[row][col].set_cell_value(value)
-                self.user_numbers[row][col] = value
+                self.board[row][col] = value
+
+        #UPDATED BELOW VERSION TO ABOVE
+        # self.selected_cell_number.set_cell_value(value)
+
+        # if self.selected_cell is not None:
+        #     row, col = self.selected_cell
+        #     if self.cells[row][col].value == 0:
+        #         self.cells[row][col].set_cell_value(value)
+        #         self.user_numbers[row][col] = value
+        #     else:
+        #         self.cells[row][col].set_sketched_value(value)
+        #
+        # for i in self.board_new:
 
 
         # Revised this version:
@@ -220,13 +248,34 @@ class Board:
                         #sys.exit()
 
     def update_board(self):
-        for row in range(0, 9):
-            for col in range(0, 9):  # loops through each row and col
-                if self.cell_value[row][col] == 0:
-                    pass
-                else:
-                    self.other_generated_board[row][col] = self.cells[row][col].value
-        return self.other_generated_board
+        for row in range(9):
+            for col in range(9):
+                self.board[row][col] = self.cells[row][col].value
+
+         # if self.generated_board[self.row][self.col] == 0:
+         #     value = Cell.set_cell_value(value)
+         # else:
+         #     value = Cell.sketched_cell_value(value)
+         #
+         # for i in self.board_new:
+         #     for row_no in i:
+         #         for col in row_no:
+         #             add.value
+
+
+
+        #
+        # self.current_answer = [[cell.value for cell in row]for row in self.board_new]
+        # print(self.current_answer)
+        # self.place_number()
+        # for row in range(0, 9):
+        #     for col in range(0, 9):  # loops through each row and col
+        #         if self.other_generated_board[row][col] != 0:
+        #             pass
+        #         else:
+        #             print(self.cells[row][col].value)
+        #             self.other_generated_board[row][col].value = self.self_placed.value
+        # return self.other_generated_board
         # Updates the underlying 2D board with the values in all cells.
         # for row in range(9):
         #     for col in range(9):
@@ -262,29 +311,61 @@ class Board:
         return None  # Return None if no empty cell is found
 
     def check_board(self):
-        if not self.is_full():
+        self.update_board()
+        if self.board == self.solved_board:
+            return True
+        else:
             return False
 
-            # Check rows and columns for duplicates
-        for row in range(9):
-            # Check if the values in the current row form a valid group
-            if not self.is_valid_group(self.get_row_values(row)):
-                return False
+    # REVISED BELOW
 
-        for col in range(9):
-            # Check if the values in the current column form a valid group
-            if not self.is_valid_group(self.get_column_values(col)):
-                return False
+        # self.update_board()
+        # print(self.current_answer)
+        # print(self.solved_board)
+        # if self.current_answer == self.solved_board:
+        #     return True
+        # else:
+        #     return False
 
-            # Check 3x3 grids for duplicates
-        for row_start in range(0, 9, 3):
-            for col_start in range(0, 9, 3):
-                # Check if the values in the current 3x3 grid form a valid group
-                if not self.is_valid_group(self.get_grid_values(row_start, col_start)):
-                    return False
 
-            # If all checks pass, return True
-        return True
+
+
+
+        # self.update_board()
+        # print(self.other_generated_board)
+        # print(self.solved_board)
+        # if self.other_generated_board == self.solved_board:
+        #     return True
+        # else:
+        #     return False
+
+        # REVISED THIS VERSION AGAIN
+        # if not self.is_full():
+        #     return False
+        #
+        #     # Check rows and columns for duplicates
+        # for row in range(9):
+        #     # Check if the values in the current row form a valid group
+        #     if not self.is_valid_group(self.get_row_values(row)):
+        #         return False
+        #
+        # for col in range(9):
+        #     # Check if the values in the current column form a valid group
+        #     if not self.is_valid_group(self.get_column_values(col)):
+        #         return False
+        #
+        #     # Check 3x3 grids for duplicates
+        # for row_start in range(0, 9, 3):
+        #     for col_start in range(0, 9, 3):
+        #         # Check if the values in the current 3x3 grid form a valid group
+        #         if not self.is_valid_group(self.get_grid_values(row_start, col_start)):
+        #             return False
+        #
+        #     # If all checks pass, return True
+        # return True
+
+
+
         # REVISED THIS VERSION ABOVE
         # Check rows and columns for duplicates
         # for row in range(9):
