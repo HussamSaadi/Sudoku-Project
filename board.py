@@ -1,6 +1,7 @@
 import pygame
 import sys
 from cell import *
+import button
 from sudoku_generator import *
 
 # Define colors
@@ -21,50 +22,79 @@ class Board:
         self.original_board = [[cell.value for cell in row] for row in self.cells]
         self.board = [[0 for _ in range(width)] for _ in range(height)]
 
-        # Define button dimensions and colors
-        self.button_width = 50
-        self.button_height = 50
-        self.button_color = PINK
-        self.button_font = pygame.font.Font(None, 30)
-        self.text_color = BLACK
-        self.grid_width = 600  # Adjust as needed
-        self.button_width, button_height = 200, 40  # Adjust button dimensions if needed
-        self.horizontal_center = (width - self.grid_width) // 2
-        self.reset_button_rect = pygame.Rect(self.horizontal_center-10, height - 60, self.button_width,
-                                             self.button_height)
-        self.restart_button_rect = pygame.Rect(self.horizontal_center+200, height - 60, self.button_width,
-                                               self.button_height)
-        self.exit_button_rect = pygame.Rect(self.horizontal_center + 410, height - 60, self.button_width,
-                                            self.button_height)
-
     def draw(self):
         self.screen.fill(LIGHT_BLUE)
         for row in range(9):
             for col in range(9):
                 self.cells[row][col].draw()
-        pygame.draw.rect(self.screen, self.button_color, self.reset_button_rect)
-        pygame.draw.rect(self.screen, self.button_color, self.restart_button_rect)
-        pygame.draw.rect(self.screen, self.button_color, self.exit_button_rect)
-
-        # Draw buttons
-        pygame.draw.rect(self.screen, self.button_color, self.reset_button_rect)
-        pygame.draw.rect(self.screen, self.button_color, self.restart_button_rect)
-        pygame.draw.rect(self.screen, self.button_color, self.exit_button_rect)
-
-        # Add text to buttons
-        self.draw_text("Reset", self.reset_button_rect.center, self.button_font)
-        self.draw_text("Restart", self.restart_button_rect.center, self.button_font)
-        self.draw_text("Exit", self.exit_button_rect.center, self.button_font)
 
         # Draw grid lines
-        pygame.draw.rect(self.screen, BLACK, pygame.Rect(15, 15, 720, 720), 10)
+        grid_size = 720
+        # grid_spacing = 80
+
+        start_x = (self.width - grid_size) // 2
+        end_x = start_x + grid_size
+        start_y = (self.height - grid_size - 80) // 2
+        end_y = start_y + grid_size
+
+        pygame.draw.rect(self.screen, BLACK, pygame.Rect(start_x, start_y, grid_size, grid_size), 10)
         for i in range(1, 10):
             if i == 3 or i == 6:
                 line_width = 10
             else:
                 line_width = 5
-            pygame.draw.line(self.screen, BLACK, ((i * 80) + 15, 15), ((i * 80) + 15, 735), line_width)
-            pygame.draw.line(self.screen, BLACK, (15, (i * 80) + 15), (735, (i * 80) + 15), line_width)
+            # pygame.draw.line(self.screen, BLACK, ((i * 80) + 15, 15), ((i * 80) + 15, 735), line_width)
+            # pygame.draw.line(self.screen, BLACK, (15, (i * 80) + 15), (735, (i * 80) + 15), line_width)
+
+            pygame.draw.line(self.screen, BLACK, (start_x + (i * 80), start_y), (start_x + (i * 80), start_y + grid_size),
+                             line_width)
+            pygame.draw.line(self.screen, BLACK, (start_x, start_y + (i * 80)), (start_x + grid_size, start_y + (i * 80)),
+                             line_width)
+
+        # load button images
+        reset_img = pygame.image.load('buttonIcons/reset.png').convert_alpha()
+        restart_img = pygame.image.load('buttonIcons/restart.png').convert_alpha()
+        exit_img = pygame.image.load('buttonIcons/exit.png').convert_alpha()
+
+        # create button instances
+        reset_button = button.Button(153, 730, reset_img, 0.7)
+        restart_button = button.Button(323, 730, restart_img, 0.7)
+        exit_button = button.Button(493, 730, exit_img, 0.7)
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                if x >= start_x and x <= end_x and y >= start_y and y <= end_y:
+                    row, col = self.click(x, y)
+                    self.select(row, col)
+                else:
+                    if reset_button.rect.collidepoint(x, y):
+                        print("Reset")
+                    # Add code to handle reset button action here
+                    elif restart_button.rect.collidepoint(x, y):
+                        print("Restart")
+                    # Add code to handle restart button action here
+                    elif exit_button.rect.collidepoint(x, y):
+                        print("Exit")
+                        pygame.quit()
+                        sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if pygame.K_1 <= event.key <= pygame.K_9:
+                    print("Number key pressed")
+                    value = event.key - pygame.K_0
+                    self.place_number(value)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    print("Delete key pressed")
+                    self.clear()
+
+        reset_button.draw(self.screen)
+        restart_button.draw(self.screen)
+        exit_button.draw(self.screen)
 
         pygame.display.flip()
 
@@ -127,38 +157,48 @@ class Board:
                     # Clear the cell value
                     self.board[row][col] = 0
 
-    def handle_events(self):
-        """
-        Handles events such as mouse clicks and keyboard input.
-        """
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                row, col = self.click(x, y)
-                self.select(row, col)
-            if event.type == pygame.KEYDOWN:
-                if pygame.K_1 <= event.key <= pygame.K_9:
-                    print("Number key pressed")
-                    value = event.key - pygame.K_0
-                    self.place_number(value)
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_BACKSPACE:
-                    print("Delete key pressed")
-                    self.clear()
+    # def handle_events(self):
+    #     grid_size = 720
+    #     # grid_spacing = 80
+    #
+    #     start_x = (self.width - grid_size) // 2
+    #
+    #
+    #     start_y = (self.height - grid_size - 80) // 2
+    #
+    #
+    #     """
+    #     Handles events such as mouse clicks and keyboard input.
+    #     """
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         pygame.quit()
+        #         sys.exit()
+        #     if event.type == pygame.MOUSEBUTTONDOWN:
+        #         x, y = pygame.mouse.get_pos()
+        #         if x >= start_x and x <= end_x and y >= start_y and y <= end_y:
+        #             row, col = self.click(x, y)
+        #             self.select(row, col)
+        #     if event.type == pygame.KEYDOWN:
+        #         if pygame.K_1 <= event.key <= pygame.K_9:
+        #             print("Number key pressed")
+        #             value = event.key - pygame.K_0
+        #             self.place_number(value)
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_BACKSPACE:
+        #             print("Delete key pressed")
+        #             self.clear()
 
             # Check for button clicks
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button
-                    mouse_pos = pygame.mouse.get_pos()
-                    if self.reset_button_rect.collidepoint(mouse_pos):
-                        self.reset_to_original()
+            #if event.type == pygame.MOUSEBUTTONDOWN:
+                #if event.button == 1:  # Left mouse button
+                    # mouse_pos = pygame.mouse.get_pos()
+                    #if self.reset_button_rect.collidepoint(mouse_pos):
+                        #self.reset_to_original()
                     # elif self.restart_button_rect.collidepoint(mouse_pos):
                     #     self.restart_game()
-                    elif self.exit_button_rect.collidepoint(mouse_pos):
-                        sys.exit()
+                    #elif self.exit_button_rect.collidepoint(mouse_pos):
+                        #sys.exit()
 
     def update_board(self):
         # Updates the underlying 2D board with the values in all cells.
