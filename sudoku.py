@@ -10,7 +10,7 @@ pygame.init()
 # Set up the display
 width, height = 800, 800
 screen = pygame.display.set_mode((width, height))
-# font = pygame.font.SysFont("arialblack", 40)
+# font = pygame.font.SysFont("arialblack", 1)
 pygame.display.set_caption("SUDOKU")
 
 # Define colors
@@ -26,7 +26,7 @@ def main():
     sudoku_board = Board(width, height, screen, difficulty="medium")
 
     # Generate initial board
-    generated_board = generate_sudoku(9, 40)
+    generated_board = generate_sudoku(9, 3)
 
     for row in range(9):
         for col in range(9):
