@@ -199,8 +199,13 @@ def main():
                 # Handle button clicks
                 if reset_button.rect.collidepoint(x, y):
                     print("Reset")
+                    sudoku_board.reset_board()
+
                 elif restart_button.rect.collidepoint(x, y):
                     print("Restart")
+                    sudoku_board.reset_board()
+                    main()
+
                 elif exit_button.rect.collidepoint(x, y):
                     print("Exit")
                     pygame.quit()
@@ -226,15 +231,22 @@ def main():
                 congrats_screen = congrats()
                 # if game_over_screen:
                 if congrats_screen:
-                    continue
-                print("Congratulations! You have solved the Sudoku!")
+                    continue_playing = True
+                    while continue_playing:
+                        continue_playing = congrats()
+                else:
+                    print("Congratulations! You have solved the Sudoku!")
             else:
                 print("Wrong! You solved it wrong!")
+                game_over()
                 running = False
+                main()
                 # Draw buttons
         reset_button.draw(sudoku_board.screen)
         restart_button.draw(sudoku_board.screen)
         exit_button.draw(sudoku_board.screen)
+
+
 
     pygame.display.flip()
 

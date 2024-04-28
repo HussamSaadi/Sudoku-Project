@@ -24,11 +24,12 @@ class Board:
         self.board = [[0 for _ in range(width)] for _ in range(height)]
         # self.generated_board = generate_sudoku(9, 40)
         # self.other_board = self.generated_board
-        self.sudoku = SudokuGenerator(9, self.difficulty)
-        self.sudoku.fill_values()
-        self.solved_board = self.sudoku.get_board()
-        self.sudoku.remove_cells()
-        self.generated_board = self.sudoku.get_board()
+        self.sudoku = generate_sudoku(9, self.difficulty)
+        self.solved_board = self.sudoku[1]
+        # self.sudoku.fill_values()
+        # self.solved_board = self.sudoku.get_board()
+        # self.sudoku.remove_cells()
+        self.generated_board = self.sudoku[0]
 
         # self.generated_board = generate_sudoku(9, self.difficulty)
         self.other_generated_board = self.generated_board
@@ -38,9 +39,12 @@ class Board:
 
         self.board_new = []
         self.selected_cell_number = 0
+        self.original_board_2 = [row[:] for row in self.generated_board]
 
     def generated_board_grab(self):
         return self.generated_board
+
+
 
     def draw(self):
         self.screen.fill(LIGHT_BLUE)
@@ -310,7 +314,13 @@ class Board:
 
     def check_board(self):
         self.update_board()
-        if self.board == self.solved_board:
+        # if self.board == self.solved_board:
+        count = 1
+        for i in range(9):
+            for j in range(9):
+                if self.board[i][j] != self.solved_board[i][j]:
+                    count = 0
+        if count == 1:
             return True
         else:
             return False
@@ -399,7 +409,13 @@ class Board:
     #             if not self.is_valid_group([self.board[i + m][j + n] for n in range(3) for m in range(3)]):
     #                 return False
     #     return True
-
+    def reset_board(self):
+        for row in range(9):
+            for col in range(9):
+                # Set the cell value to its original value
+                self.cells[row][col].set_cell_value(self.original_board_2[row][col])
+            # Redraw the board to update the display
+        self.draw()
     def is_valid_group(self, group):
         # Helper function to check if a group (row, column, or 3x3 grid) contains only unique values
         seen = set()

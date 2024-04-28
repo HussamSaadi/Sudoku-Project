@@ -1,5 +1,5 @@
 import math, random
-
+import copy
 """
 This was adapted from a GeeksforGeeks article "Program for Sudoku Generator" by Aarti_Rathi and Ankur Trisal
 https://www.geeksforgeeks.org/program-sudoku-generator/
@@ -35,14 +35,12 @@ class SudokuGenerator:
         # self.unused_in_box = {}
 
 
-
     '''
 	Returns a 2D python list of numbers which represents the board
 
 	Parameters: None
 	Return: list[list]
     '''
-
     def get_board(self):
         # If we are creating the board at the init method,
         # then all this should do is return the board. Hopefully :)
@@ -414,10 +412,12 @@ class SudokuGenerator:
 def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
-    board = sudoku.get_board()
+    solution = copy.deepcopy(sudoku.get_board())
+    # deep copy of sol
+
     sudoku.remove_cells()
     board = sudoku.get_board()
-    return board
+    return board, solution
 
 
 
