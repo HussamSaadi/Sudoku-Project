@@ -148,7 +148,7 @@ def game_over():
                 sys.exit()
             if restart_button.draw(screen):
                 print("Restart")
-                main_menu()
+                main()
                 # restart_game = True
         # draw buttons
         restart_button.draw(screen)
@@ -203,7 +203,6 @@ def main():
 
                 elif restart_button.rect.collidepoint(x, y):
                     print("Restart")
-                    sudoku_board.reset_board()
                     main()
 
                 elif exit_button.rect.collidepoint(x, y):
@@ -239,8 +238,9 @@ def main():
             else:
                 print("Wrong! You solved it wrong!")
                 game_over()
-                running = False
                 main()
+                running = False
+
                 # Draw buttons
         reset_button.draw(sudoku_board.screen)
         restart_button.draw(sudoku_board.screen)
