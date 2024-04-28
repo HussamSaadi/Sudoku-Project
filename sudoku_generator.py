@@ -373,16 +373,13 @@ class SudokuGenerator:
 	Return: None
     '''
 
-
     def remove_cells(self):
-        count = 0
-        while count != (self.removed_cells):
-            row = random.randint(0, 8)
-            column = random.randint(0, 8)
-            if self.board[row][column] != 0:
-                print(f"Removing cell at row {row}, column {column}")
-                self.board[row][column] = 0
-            count += 1
+        cell_indices = [(row, col) for row in range(9) for col in range(9)]
+        random.shuffle(cell_indices)
+        for row, col in cell_indices[:self.removed_cells]:
+            if self.board[row][col] != 0:
+                print(f"Removing cell at row {row}, column {col}")
+                self.board[row][col] = 0
     # def remove_cells(self):
     #     count = 0
     #     while count != (self.removed_cells + 1):
