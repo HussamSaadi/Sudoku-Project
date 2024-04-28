@@ -73,7 +73,7 @@ def main_menu():  # main menu screen
                 pygame.quit()
                 sys.exit()
             if easy_button.draw(screen):
-                set_level = 1
+                set_level = 30
                 print("Easy")
                 return set_level
                 # menu_state = "new screen"
