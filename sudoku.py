@@ -158,7 +158,9 @@ def game_over():
 #
 #     return sudoku_board
 def main():
+
     win_sound = pygame.mixer.Sound("Congratulations.mp3")
+    lose_sound = pygame.mixer.Sound("Lose.mp3")
     set_level = main_menu()
     sudoku_board = Board(width, height, screen, set_level)
     # Generate initial board
@@ -240,6 +242,8 @@ def main():
 
 
             else:
+                lose_sound.play()
+
                 print("Wrong! You solved it wrong!")
                 game_over()
                 main()
