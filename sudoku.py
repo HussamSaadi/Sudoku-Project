@@ -73,7 +73,7 @@ def main_menu():  # main menu screen
                 pygame.quit()
                 sys.exit()
             if easy_button.draw(screen):
-                set_level = 30
+                set_level = 1
                 print("Easy")
                 return set_level
                 # menu_state = "new screen"
@@ -158,7 +158,7 @@ def game_over():
 #
 #     return sudoku_board
 def main():
-
+    win_sound = pygame.mixer.Sound("Congratulations.mp3")
     set_level = main_menu()
     sudoku_board = Board(width, height, screen, set_level)
     # Generate initial board
@@ -227,7 +227,9 @@ def main():
             final_destination = sudoku_board.check_board()
             if final_destination:
                 # game_over_screen = game_over()
+                win_sound.play()
                 congrats_screen = congrats()
+
                 # if game_over_screen:
                 if congrats_screen:
                     continue_playing = True
@@ -235,6 +237,8 @@ def main():
                         continue_playing = congrats()
                 else:
                     print("Congratulations! You have solved the Sudoku!")
+
+
             else:
                 print("Wrong! You solved it wrong!")
                 game_over()
